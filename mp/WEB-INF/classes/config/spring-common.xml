@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<!-- 1. 数据源 : 成都市云中心   DriverManagerDataSource -->
+	<!-- <bean id="mysql"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://178.16.33.102:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="bsoft" />
+	</bean>  -->
+	<!-- 1. 数据源 :眉山中医院   DriverManagerDataSource -->
+	<!-- <bean id="mysql" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+       <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+       <property name="url" value="jdbc:mysql://192.168.6.1:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+       <property name="username" value="root" />
+       <property name="password" value="mszyy123" />
+       初始化连接大小
+       <property name="initialSize" value="60" />
+       连接池最大使用连接数量
+       <property name="maxActive" value="200" />
+       连接池最大空闲
+       <property name="maxIdle" value="20" />
+       连接池最小空闲
+       <property name="minIdle" value="0" />
+       获取连接最大等待时间
+       <property name="maxWait" value="60000" />
+   </bean>  -->
+	<!-- 崇州 -->
+
+	<!-- 云中心 -->
+	<!-- <bean id="mysql"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://178.16.33.102:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="bsoft" />
+	</bean> -->
+	<!-- 忠县 -->
+	<!-- <bean id="mysql"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://10.72.10.28:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean> -->
+	<!-- 江北 -->
+	<!-- <bean id="mysql"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://10.28.10.31:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean> -->
+
+	<!-- 本机-->
+	<!--<bean id="mysql" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+       <property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+	<!--   <property name="url" value="jdbc:mysql://127.0.0.1:3306/ms_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+    <property name="username" value="root" />
+    <property name="password" value="tanc" />    -->
+	<!--    <property name="url" value="jdbc:mysql://192.168.6.1:3306/ph_pt?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+    <property name="username" value="root" />
+    <property name="password" value="mszyy123" />   -->
+	<!-- 初始化连接大小 -->
+	<!--  <property name="initialSize" value="60" /> -->
+	<!--   连接池最大使用连接数量 -->
+	<!-- <property name="maxActive" value="200" /> -->
+	<!--  连接池最大空闲 -->
+	<!-- <property name="maxIdle" value="20" /> -->
+	<!--  连接池最小空闲 -->
+	<!--   <property name="minIdle" value="0" /> -->
+	<!--  获取连接最大等待时间 -->
+	<!--  <property name="maxWait" value="60000" />
+  </bean>   -->
+
+	<!-- 重庆忠县数据 -->
+	<!-- <bean id="dataSource_orcl"
+       class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+       <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+       <property name="url" value="jdbc:oracle:thin:@10.72.5.15:1521:orcl" />
+       <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.72.5.15)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = orcl)))" />
+
+       <property name="username" value="phis" />
+       <property name="password" value="phis" />
+   </bean>
+
+   <bean id="dataSource_orcl_cs"
+       class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+       <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+
+       <property name="url" value="jdbc:oracle:thin:@10.72.5.15:1521:orcl" />
+       <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.72.5.15)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = orcl)))" />
+
+       <property name="username" value="phis" />
+       <property name="password" value="phis" />
+   </bean>  -->
+	<!-- 眉山中医院 -->
+	<!-- <bean id="dataSource_orcl" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+      <property name="url" value="jdbc:oracle:thin:@192.168.7.92:1521:MSZYYORCL" />
+      <property name="username" value="BSHIP_mdr" />
+      <property name="password" value="bship_mdr" />
+      初始化连接大小
+      <property name="initialSize" value="60" />
+      连接池最大使用连接数量
+      <property name="maxActive" value="200" />
+      连接池最大空闲
+      <property name="maxIdle" value="20" />
+      连接池最小空闲
+      <property name="minIdle" value="0" />
+      获取连接最大等待时间
+      <property name="maxWait" value="60000" />
+  </bean>
+  <bean id="dataSource_orcl_cs" class="com.alibaba.druid.pool.DruidDataSource"  init-method="init" destroy-method="close">
+      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+      <property name="url" value="jdbc:oracle:thin:@192.168.7.92:1521:MSZYYORCL" />
+      <property name="username" value="BSHIP_mdr" />
+      <property name="password" value="bship_mdr" />
+      初始化连接大小
+      <property name="initialSize" value="60" />
+      连接池最大使用连接数量
+      <property name="maxActive" value="200" />
+      连接池最大空闲
+      <property name="maxIdle" value="20" />
+      连接池最小空闲
+      <property name="minIdle" value="0" />
+      获取连接最大等待时间
+      <property name="maxWait" value="60000" />
+  </bean>   -->
+	<!-- 公司眉山中医院测试库 -->
+	<bean id="dataSource_orcl" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@188.188.0.234:1521/bshyy" />
+		<property name="username" value="portal_his " />
+		<property name="password" value="BsHzxb#hIs" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="60" />
+		<!--   连接池最大使用连接数量 -->
+		<property name="maxActive" value="200" />
+		<!--  连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!--  连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!--  获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+	</bean>
+	<bean id="dataSource_orcl_cs" class="com.alibaba.druid.pool.DruidDataSource"  init-method="init" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@192.168.2.6:1521/lzsfy" />
+		<property name="username" value="portal_his " />
+		<property name="password" value="lzsfy" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="60" />
+		<!--  连接池最大使用连接数量 -->
+		<property name="maxActive" value="200" />
+		<!--    连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!--   连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!--  获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+	</bean>
+
+	<bean id="mysql" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://192.168.2.42:3306/yzcx?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+	<!-- 2. mybatis的SqlSession的工厂: SqlSessionFactoryBean dataSource:引用数据源 MyBatis定义数据源,同意加载配置 -->
+
+	<!-- 动态数据源 -->
+	<bean id="dynamicDataSource" class="com.bsoft.util.datasource.DynamicDataSource">
+		<!-- 通过key-value关联数据源 -->
+		<property name="targetDataSources">
+			<map>
+				<entry value-ref="mysql" key="mysql"></entry>
+				<entry value-ref="dataSource_orcl" key="dataSource_orcl"></entry>
+				<entry value-ref="dataSource_orcl_cs" key="dataSource_orcl_cs"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource_orcl" />
+	</bean>
+
+	<!--mybatis与Spring整合 开始 -->
+	<!-- 2. mybatis的SqlSession的工厂: SqlSessionFactoryBean dataSource:引用数据源 MyBatis定义数据源,同意加载配置 -->
+	<!-- <bean id="timeTask" class="com.bsoft.wechat.util.TimeTask" init-method="runTask"></bean> -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dynamicDataSource"></property>
+		<property name="configLocation" value="classpath:/config/mybatis-config.xml" />
+		<!--		<property name="mapperLocations" value="classpath:/com/bsoft/mapper/**/*.xml" />-->
+	</bean>
+
+	<!-- 3. mybatis自动扫描加载Sql映射文件/接口 : MapperScannerConfigurer sqlSessionFactory basePackage:指定sql映射文件/接口所在的包（自动扫描） -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.bsoft.mapper"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+
+	<!-- 4. 事务管理 : DataSourceTransactionManager dataSource:引用上面定义的数据源 -->
+	<bean id="txManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dynamicDataSource"></property>
+	</bean>
+
+	<!-- 5. 使用声明式事务 transaction-manager：引用上面定义的事务管理器 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- <aop:config proxy-target-class="true" > 
+		<aop:pointcut id="target" expression="execution(* com.bsoft.service.impl.*.*(..))" />
+		expression="within(* com.bsoft.service.impl.*.*(..))"
+	    <aop:advisor advice-ref="txManager"  pointcut-ref="target"/> 
+	</aop:config>   -->
+</beans>

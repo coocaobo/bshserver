@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.meishan.MSVersionMapper">
+    <insert id="save" parameterType="Version" useGeneratedKeys="true" keyProperty="id">
+		insert into t_version
+		  (tenantpname,tenantpcode, platform, versioncode,versionname, url, updatetype,memo, content, createdt, updatedt)
+		values
+		  ( #{tenantpName},#{tenantpCode}, #{platform}, #{versionCode},#{versionName}, #{url}, #{updateType},#{memo}, #{content}, #{createDt}, #{updateDt});
+	</insert>
+	<update id="update"  parameterType="Version">
+	 update t_version SET 
+	 	<if test=" tenantpName!=null and tenantpName!='' ">
+			tenantpName=#{tenantpName},
+		</if>
+		<if test=" tenantpCode!=null and tenantpCode!='' ">
+			tenantpCode=#{tenantpCode},
+		</if>
+		<if test=" platform!=null and platform!='' ">
+			platform=#{platform},
+		</if>
+		<if test=" versionCode!=null and versionCode!='' ">
+			versionCode=#{versionCode},
+		</if>
+		<if test=" versionName!=null and versionName!='' ">
+			versionName=#{versionName},
+		</if>
+		<if test=" url!=null and url!='' ">
+			url=#{url},
+		</if>
+		<if test=" updateType!=null and updateType!='' ">
+			updateType=#{updateType},
+		</if>
+		<if test=" content!=null and content!='' ">
+			content=#{content},
+		</if>
+		<if test=" memo!=null and memo!='' ">
+			memo=#{memo},
+		</if>
+		<if test=" createDt!=null and createDt!='' ">
+			createDt=#{createDt},
+		</if>
+		<if test=" updateDt!=null and updateDt!='' ">
+			updateDt=#{updateDt}
+		</if>
+	 where 1=1 
+	 <if test="id!=null and id!='' ">
+		and id=#{id}
+	 </if>
+	</update>
+ <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="getVersion" parameterType="Version" resultType="Version">
+		select id, tenantpName,tenantpCode, platform, versionCode,versionName, url, updateType,memo, content, createDt, updateDt from t_version
+		where 1=1
+		<if test="id!=null and id!='' ">
+			and id=#{id}
+		</if>
+		<if test="tenantpCode!=null and tenantpCode!='' ">
+			and tenantpCode=#{tenantpCode}
+		</if>
+		<if test="platform!=null and platform!='' ">
+			and platform=#{platform}
+		</if>
+   	    order by id,createdt
+	</select>
+	
+	<select id="getVersionAll" parameterType="Version" resultType="Version">
+		select id, tenantpName,tenantpCode, platform,versionCode,versionName,  url, updateType,memo,  content, createDt, updateDt from t_version
+		where 1=1
+		<if test="id!=null and id!='' ">
+			and id=#{id}
+		</if>
+		<if test="platform!=null and platform!='' ">
+			and platform=#{platform}
+		</if>
+   	    order by id,createdt
+	</select>
+	<select id="getVersionCount"  resultType="int" parameterType="Version">  
+    	select count(*) as count
+    	 from t_version where tenantpCode=#{tenantpCode} and versionName=#{versionName} and platform=#{platform}
+    </select> 
+    <select id="getVersionId"  resultType="Version" parameterType="Version">  
+    	select max(id)+1 as id
+    	 from t_version
+    </select> 
+</mapper>

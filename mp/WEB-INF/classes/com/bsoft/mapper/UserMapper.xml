@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.UserMapper">
+	
+	<insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="user_id">
+		insert into t_user(user_name,user_age,jgid,status,password,createTime) 
+		values(#{userName},#{userAge},#{jgid},#{status},#{password},#{createTime})
+	</insert>
+	<update id="update"  parameterType="User">
+	 update t_user SET 
+	 	<if test=" jgid!=null and jgid!='' ">
+			jgid=#{jgid},
+		</if>
+		<if test=" userName!=null and userName!='' ">
+			user_name=#{userName},
+		</if>
+		<if test=" password!=null and password!='' ">
+			password=#{password},
+		</if>
+			status=#{status}
+	 where 1=1 
+	 <if test="userId!=null and userId!='' ">
+		and user_id=#{userId}
+	 </if>
+	</update>
+	
+	<update id="updateMS"  parameterType="User">
+		 update base_user
+	        set  
+	        <if test=" password!=null and password!='' ">
+				password=#{password},
+			</if>
+			<if test=" userName!=null and userName!='' ">
+				name=#{userName},
+			</if>
+	            status = #{status}
+	      where 1=1 
+			 <if test="userId!=null and userId!='' ">
+				and id=#{userId}
+			 </if>
+	</update>
+	
+	<delete id="delete" parameterType="User">
+		delete from t_user where 1=1 
+		<if test="userId!=null and userId!='' ">
+			and user_id=#{userId}
+		</if>
+	</delete>
+	
+	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="findUser" parameterType="User" resultType="User">
+		select user_id userId,user_name userName,a.jgid jgid,user_name userName,
+		a.status status,password password,user_age userAge,createTime createTime,roleId  roleId,c.ORGANIZSECONDNAME jgmc
+				 from t_user a
+		left join t_user_role b on a.user_name = b.userName  
+		 and  a.jgid = b.jgid  
+		 left join sys_organization c on a.jgid = c.jgid 
+		 where  a.status=1
+		<if test="userId!=null and userId!='' ">
+			and user_id=#{userId}
+		</if>
+		<if test="userName!=null and userName!='' ">
+			and user_name=#{userName}
+		</if>
+   	    order by user_id,createTime
+	</select>
+	
+	<select id="findUserMS" parameterType="User" resultType="User">
+		select a.id                userId,
+		       a.name              userName,
+		       b.organizcode       jgid,
+		       a.status            status,
+		       a.password          password,
+		       a.createdt          createTime,
+		       c.roleid            roleId,
+		       d.organizsecondname jgmc
+		  from base_user a
+		  left join sys_personnel b
+		    on a.id = b.personid
+		  left join t_user_role c
+		    on a.id = c.userid
+		   and b.organizcode = c.jgid
+		  left join sys_organization d
+		    on c.jgid = d.organizcode
+		 where a.status = 1
+		<if test="userId!=null and userId!='' ">
+			and a.id =#{userId} 
+		</if>
+		<if test="userName!=null and userName!='' ">
+			and a.name =#{userName}
+		</if>
+   	    order by a.id,c.roleid, a.createdt
+	</select>
+	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="findUserInfo" parameterType="User" resultType="User">
+		select a.user_id userId,a.user_name userName,a.password password,a.user_age userAge,a.createTime createTime,b.jgid jgid ,b.ORGANIZNAME jgmc,c.roleId as roleId,a.status status 
+		 from t_user a left join sys_organization b on a.jgid = b.jgid left JOIN t_user_role c on a.user_name = c.userName and a.jgid = c.jgid   where 1=1
+		<if test="userId!=null and userId!='' ">
+			and user_id=#{userId}
+		</if> 
+		<if test="userName!=null and userName!='' ">
+			and user_name=#{userName}
+		</if>
+   	    order by user_id,createTime
+	</select>
+	
+	<select id="findUserInfoMS" parameterType="User" resultType="User">
+		select a.id          userId,
+		       a.name        userName,
+		       a.password    password,
+		       a.createDt    createTime,
+		       e.organizcode jgid,
+		       b.ORGANIZNAME jgmc,
+		       c.roleId      as roleId,
+		       a.status      status
+		  from base_user a
+		  left join sys_personnel e
+		    on a.id = e.personid
+		  left join sys_organization b
+		    on e.organizcode = b.organizcode
+		  left JOIN t_user_role c
+		    on a.id = c.userid
+		   and e.organizcode = c.jgid
+		 where 1 = 1
+		<if test = "userId!=null and userId!='' " >
+		  and id = #{userId} 
+		</if > 
+		<if test = "userName!=null and userName!='' " >
+		  and name = #{userName} 
+		</if >
+		 order by id, createDt
+	</select>
+	
+	<select id="getHosInfo" resultType="HospitalInformation"  parameterType="User" >
+ 			select JGID              as JGID,
+			       ORGANIZSECONDNAME as organizSecondName,
+			       ORGANIZNAME       as organizName
+			  from (select a.JGID              as JGID,
+			               b.ORGANIZSECONDNAME as organizSecondName,
+			               b.ORGANIZNAME       as organizName,
+			               b.plsx              plsx
+			          from t_user_role a
+			          LEFT JOIN sys_organization b
+			            on a.jgid = b.JGID
+			         where 1 = 1
+			           and a.userName = #{userName}
+			        UNION
+			        select group_concat(bb.jgid separator ',') as JGID,
+			               '全院' as organizSecondName,
+			               '全部医院' as organizName,
+			               0 plsx
+			          from t_user_role bb
+			         where 1 = 1
+			           and bb.userName = #{userName}) aa
+			 ORDER BY plsx
+ 
+	</select>
+	<select id="getHosInfoMS" resultType="HospitalInformation"  parameterType="String" >
+ 				select 
+ 				   JGID  as JGID,
+ 				   JGID as organizCode,
+			       ORGANIZNAME as organizSecondName,
+			       ORGANIZNAME       as organizName
+			  from (select a.JGID              as JGID,
+			               b.ORGANIZSECONDNAME as organizSecondName,
+			               b.ORGANIZNAME       as organizName,
+			               b.plsx              plsx
+			          from t_user_role a
+			          LEFT JOIN sys_organization b
+			            on a.jgid = b.organizcode
+			         where a.userid = #{userId}
+			           ) aa
+			 ORDER BY plsx
+
+	</select>
+	<select id="findAll" resultType="User"  parameterType="User" >
+		select a.user_id userId,a.user_name userName,a.user_age userAge,a.createTime createTime,b.jgid jgid ,b.ORGANIZNAME jgmc,c.roleId as roleId,a.status status
+,group_concat(d.ORGANIZNAME separator ',') jgmcQX
+		 from t_user a left join sys_organization b on a.jgid = b.jgid left JOIN t_user_role c on a.user_name = c.userName 
+ left join sys_organization d on c.jgid = d.jgid
+   where 1=1
+		<if test="userId!=null and userId!='' ">
+			and user_id=#{userId}
+		</if>
+		<if test="userName!=null and userName!='' ">
+			and user_name=#{userName}
+		</if>
+   	   GROUP BY
+a.user_id ,a.user_name ,a.user_age ,a.createTime ,b.jgid  ,b.ORGANIZNAME ,c.roleId  ,a.status 
+order by  user_id,createTime
+	</select>
+	
+	<select id="findAllMS" resultMap="userMap2"  parameterType="User" >
+		select a.id userId,
+		       a.name userName,
+		       a.createdt createTime,
+		       e.organizcode jgid,
+		       b.ORGANIZNAME jgmc,
+		       c.roleId as roleId,
+		       r.roledesc roleDesc,
+		       a.status status,
+		       WMSYS.WM_CONCAT(d.ORGANIZNAME  ) jgmcQX
+		  from base_user a
+		  left join sys_personnel e on a.id = e.personid 
+		  left join sys_organization b on e.organizcode= b.organizcode
+		  left JOIN t_user_role c on a.id = c.userid
+		  left join t_role r on r.id=c.roleid
+		  left join sys_organization d on c.jgid = d.organizcode
+		 <where>
+			  <if test = "userId!=null and userId!='' " >
+			   and a.id = #{userId} 
+			  </if> 
+			  <if test = "userName!=null and userName!='' " >
+			   and a.name like concat(concat('%',#{userName}),'%') 
+			  </if>
+			  <if test = "jgid!=null and jgid!='' " >
+			   and e.organizcode = #{jgid} 
+			  </if>  
+		 </where> 
+		 GROUP BY a.id,
+		          a.name,
+		          a.createdt,
+		          e.organizcode,
+		          b.ORGANIZNAME,
+		          c.roleId,
+		          r.roledesc,
+		          a.status
+		 order by a.id, a.createdt
+
+	</select>
+	
+	<select id="deleteAll">
+		delete from t_user
+	</select>
+	
+	<select id="validataUserName"  resultType="int" parameterType="String">  
+    	select count(*) as count
+    	 from t_user where user_name=#{userName}
+    </select> 
+	<insert id="saveUserRole" parameterType="UserRole" useGeneratedKeys="true" keyProperty="UserRole">
+		insert into t_user_role(userName,roleId,jgid)
+		values(#{userName},#{roleId},#{jgid})
+	</insert>
+	<delete id="deleteUserRole" parameterType="UserRole" >
+		delete from t_user_role where  userName=#{userName}
+	</delete>
+	<insert id="saveUserRoleMS" parameterType="UserRole" useGeneratedKeys="true" keyProperty="UserRole">
+		insert into t_user_role(userId,roleId,jgid) 
+		values(#{userName},#{roleId},#{jgid})
+	</insert>
+	<delete id="deleteUserRoleMS" parameterType="UserRole" >
+		delete from t_user_role where  userId=#{userName}
+	</delete>
+	<update id="updateUserRole"  parameterType="UserRole">
+	 update t_user_role SET roleId=#{roleId},userName=#{userName}
+	 where roleId=#{oldRoleId} and userName=#{oldUserName}
+	</update>
+	<select id="findUserRole" parameterType="UserRole" resultType="UserRole">
+		select roleId roleId,group_concat(a.jgid separator ',') as jgid,user_name userName,b.roleDesc roleName 
+from t_user c left join t_user_role a on c.user_name = a.userName left join t_role b on a.roleId = b.id
+		 where   c.user_name=#{userName} GROUP BY userName
+	</select>
+	<select id="findUserRoleMS" parameterType="UserRole" resultType="UserRole">
+		select roleId roleId,
+		       WMSYS.WM_CONCAT(a.jgid) as jgid,
+		       c.id userName,
+		       b.roleDesc roleName
+		  from base_user c
+		  left join t_user_role a
+		    on c.id = a.userId
+		  left join t_role b
+		    on a.roleId = b.id
+		 where c.id = #{userName}
+		 GROUP BY c.id, roleId, b.roleDesc
+	</select>
+	<select id="findUserRoleList" parameterType="UserRole" resultType="UserRole">
+		select roleId roleId,jgid jgid,userName userName,b.roleDesc roleName
+		from t_user_role a left join t_role b on a.roleId = b.id 
+		 where   userName=#{userName}
+	</select>
+	<select id="findUserRoleAll" parameterType="UserRole" resultType="UserRole">
+		select id roleId,roleDesc roleName from t_role 
+	</select>
+	<select id="findUserRoleAllMS" parameterType="UserRole" resultType="UserRole">
+		select id roleId,roleDesc roleName from t_role 
+	</select>
+	
+	<!-- 新增角色 -->
+	<insert id="addRole" parameterType="Role">
+     	<selectKey resultType="int" order="BEFORE" keyProperty="id">
+           SELECT ROLESEQ.NEXTVAL FROM DUAL
+       </selectKey>
+		insert into t_role(id,roleDesc,status) values(#{id},#{roleDesc},#{status})
+	</insert>
+	
+	<!-- 动态更新角色 -->
+	<update id="updateRole" parameterType="Role">
+		update t_role
+		<set>
+			<if test="roleDesc!=null and roleDesc!=''">
+				roleDesc=#{roleDesc},
+			</if>
+			<if test="status!=null">
+				status=#{status}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<!-- 通过角色名查询角色信息 -->
+	<select id="getRoleByRoleDesc" resultType="Role">
+		select *from t_role where roleDesc=#{roleDesc}
+	</select>
+	
+	<!-- 查询全部角色 -->
+	<select id="getAllRole" resultType="Role">
+		select *from t_role
+		<where>
+			<if test="roleName!=null and roleName!=''">
+				roledesc like concat('%',concat(#{roleName},'%'))
+			</if>
+		</where>
+	</select>
+	
+	<!-- 通过id删除角色 -->
+	<delete id="deleteRoleById">
+		delete from t_role where id=#{id}
+	</delete>
+	
+	<!-- 添加用户角色 -->
+	<insert id="addUserRole" parameterType="UserRole">
+		insert into T_USER_ROLE(userid,roleid,jgid)
+		<foreach close=")" collection="jgids" item="jgid" index="index" open="(" separator="union">
+			select 
+				#{userId},
+				#{roleId},
+				#{jgid}
+			from dual
+		</foreach>
+	</insert>
+	
+	<!-- 更新系统用户 -->
+	<update id="updateUser" parameterType="User">
+		update base_user
+		<set>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+			<if test="status!=null">
+				status=#{status}
+			</if>
+		</set>
+		where id=#{userId}
+	</update>
+	
+	<!--新增系统用户 -->
+	<insert id="addUser" parameterType="User">
+		insert into base_user(id,name,password,status,createdt,pagecount)
+		values(#{userId},#{userName},#{password},#{status},#{createTime},0)
+	</insert>
+	
+	<!-- 通过用户名查询系统用户 -->
+	<select id="getUserMapByUserId" resultType="java.util.Map">
+		select *from base_user where id=#{userId}
+	</select>
+	
+	
+	<!-- 通过personid获取员工信息 -->
+	<select id="getPersonnelByPersonId" parameterType="String" resultType="Personnel">
+		select *from sys_personnel where personid=#{personId}
+	</select>
+
+
+	<!-- 通过用户名查询系统用户 -->
+	<select id="getUserByUserId" parameterType="String" resultMap="userMap1">
+		select distinct a.id userId,a.name userName,
+           a.password password,a.createDt createTime,
+           e.organizcode jgid,b.ORGANIZNAME jgmc,
+           c.roleId roleId,d.roledesc roleDesc,
+           a.status status,f.officecode officeCode,f.officename officeName
+      from base_user a
+      left join sys_personnel e on a.id = e.personid
+      left join sys_organization b on e.organizcode = b.organizcode
+      left join sys_office f on f.id=e.officecode
+      left JOIN t_user_role c on a.id = c.userid
+      left join t_role d on d.id=c.roleid
+      where e.ygdm=#{userId}
+      order by a.id, a.createDt
+	</select>
+	
+	<!-- 系统用户查询实体类映射 -->
+	<resultMap id="userMap1" type="User" >
+		<result property="userId" column="userId" />
+	    <result property="userName" column="userName" />
+	    <result property="password" column="password" />
+	    <result property="createTime" column="createTime"/>
+	    <result property="jgid" column="jgid" />
+	    <result property="jgmc" column="jgmc" />
+	    <result property="status" column="status"/>
+	    <result property="officeCode" column="officeCode" />
+	    <result property="officeName" column="officeName" />
+	    <association property="role" column="roleId" javaType="Role">
+			<result property="id" column="roleId"/>
+	    	<result property="roleDesc" column="roleDesc" />
+		</association>
+	     <collection property="hosList" column="userId" ofType="HospitalInformation" select="getHosInfoMS">
+	    </collection>
+	</resultMap>
+
+	<!-- 系统用户查询实体类映射 -->
+	<resultMap id="userMap2" type="User" >
+		<result property="userId" column="userId" />
+	    <result property="userName" column="userName" />
+	    <result property="password" column="password" />
+	    <result property="createTime" column="createTime"/>
+	    <result property="status" column="status"/>
+	    <result property="jgid" column="jgid" />
+	    <result property="jgmc" column="jgmc" />
+	    <result property="roleId" column="roleId" />
+	    <result property="jgmcQx" column="jgmcQX"/>
+	    <association property="role" column="roleId" javaType="Role">
+			<result property="id" column="roleId"/>
+	    	<result property="roleDesc" column="roleDesc" />
+		</association>
+	</resultMap>
+</mapper>

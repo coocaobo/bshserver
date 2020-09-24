@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.PersonnelSituationMapper">
+	<select id="findAll" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			ifnull(sum(a.gwrys),0) gwrys,
+			ifnull(sum(a.gxczs),0) gxczs,
+			ifnull(sum(a.hss),0) hss,
+			ifnull(sum(a.sjyyyss),0) sjyyyss,
+			ifnull(sum(a.tdfgrs),0) tdfgrs,
+			ifnull(sum(a.tds),0) tds,
+			ifnull(sum(a.yss),0) yss,
+			ifnull(sum(a.qtcys),0) qtcys,
+			ifnull(max(a.zhs),0) zhs,
+			ifnull(max(a.qyzhs),0) qyzhs,
+			ifnull(sum(a.tdfgyzz),0) tdfgyzz,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate	
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+		    a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			and a.jgid=#{jgid}
+		</if>
+	</select>
+	<select id="findAllByJgid" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			a.jgid jgid,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			b.ORGANIZNAME jgmc,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate	
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid =g.teamcode
+			<if test="jgid!=null and jgid!='' ">
+				and a.jgid=#{jgid}
+			</if>
+		group by  a.jgid,b.ORGANIZNAME
+	</select>
+	
+	<select id="getPersonnelSituationCitySum" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(sum(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid=g.teamcode
+		<if test="jgid!=null and jgid!='' ">
+			and  (a.jgid like CONCAT(#{jgid}, '%') )
+		</if>
+	</select>
+	<select id="getPersonnelSituationCountySum" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(sum(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			
+			c.ADMINDIVISION jgid,
+			c.ORGANIZNAME jgmc,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate,
+			(select ifnull(sum(tdfgrs),0) from fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )) 
+ztdfgrs,
+(select ifnull(sum(tds),0) from fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )) 
+	  ztds 			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode
+			<if test="jgid!=null and jgid!='' ">
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )
+			<!-- and a.jgid=#{jgid} -->
+		</if>
+		GROUP BY c.ADMINDIVISION,c.ORGANIZNAME
+	</select>
+	
+	<select id="getPersonnelSituationCountySumTotal" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(sum(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate,
+			(select ifnull(sum(tdfgrs),0) from fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )) 
+ztdfgrs,
+(select ifnull(sum(tds),0) from fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )) 
+	  ztds 			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode
+			<if test="jgid!=null and jgid!='' ">
+				and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )
+				<!-- and a.jgid=#{jgid} -->
+			</if>
+	</select>
+
+
+	<select id="getPersonnelSituationSumByTeam" resultType="PersonnelSituation"  parameterType="User" >
+		
+SELECT
+	IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			b.TEAMCODE jgid,
+			b.TEAMNAME jgmc,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate	,
+			(select ifnull(sum(tdfgrs),0) FROM
+			fm_personnelsituation a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1  
+				and b.ORGCODE = #{jgid}) 
+ztdfgrs,
+(select ifnull(count(1),0) FROM sys_team b  WHERE	1 = 1  	and b.ORGCODE = #{jgid})   ztds 	FROM
+			fm_personnelsituation a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			<if test="jgid!=null and jgid!='' ">
+				<!-- and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') ) -->
+				and b.ORGCODE = #{jgid}
+				<!-- and a.jgid=#{jgid} -->
+			</if> 
+
+GROUP BY TEAMCODE ,
+			TEAMNAME 
+			
+	</select>
+	
+	<select id="getPersonnelSituationSumByTeamTotal" resultType="PersonnelSituation"  parameterType="User" >
+		
+SELECT
+	IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate	,
+			(select ifnull(sum(tdfgrs),0) FROM
+			fm_personnelsituation a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1  
+				and b.ORGCODE = #{jgid}) 
+ztdfgrs,
+(select ifnull(sum(tds),0) FROM
+			fm_personnelsituation a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1  
+				and b.ORGCODE = #{jgid}) 
+	  ztds 
+		
+		FROM
+			fm_personnelsituation a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			<if test="jgid!=null and jgid!='' ">
+				<!-- and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') ) -->
+				and b.ORGCODE = #{jgid}
+				<!-- and a.jgid=#{jgid} -->
+			</if> 
+	</select>
+	<select id="getPersonnelSituationCountyDetails" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			b.jgid jgid,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			b.ORGANIZNAME jgmc,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate,
+			(select ifnull(sum(tdfgrs),0) FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+			  and b.ADMINDIVISION=#{jgid}  ) 
+ztdfgrs,
+(select ifnull(sum(tds),0) FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+			  and b.ADMINDIVISION=#{jgid}  ) 
+	  ztds 			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode
+		<if test="jgid!=null and jgid!='' ">
+			  and b.ADMINDIVISION=#{jgid}  
+		</if>
+   	    group by  b.jgid,b.ORGANIZNAME
+	</select>
+	
+	<select id="getPersonnelSituationCountyDetailsTotal" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate,
+			(select ifnull(sum(tdfgrs),0) FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+			  and b.ADMINDIVISION=#{jgid}  ) 
+ztdfgrs,
+(select ifnull(sum(tds),0) FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+			  and b.ADMINDIVISION=#{jgid}  ) 
+	  ztds 			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode
+		<if test="jgid!=null and jgid!='' ">
+			  and b.ADMINDIVISION=#{jgid}  
+		</if>
+	</select>
+	<select id="getPersonnelSituationByJgid" resultType="PersonnelSituation"  parameterType="User" >
+		SELECT
+			IFNULL(sum(a.gwrys),0) gwrys,
+			IFNULL(max(a.gxczs),0) gxczs,
+			IFNULL(sum(a.hss),0) hss,
+			b.jgid jgid,
+			IFNULL(sum(a.sjyyyss),0) sjyyyss,
+			IFNULL(sum(a.tdfgrs),0) tdfgrs,
+			IFNULL(sum(a.tds),0) tds,
+			IFNULL(sum(a.yss),0) yss,
+			IFNULL(sum(a.qtcys),0) qtcys,
+			IFNULL(max(a.zhs),0) zhs,
+			IFNULL(max(a.qyzhs),0) qyzhs,
+			IFNULL(sum(a.tdfgyzz),0) tdfgyzz,
+			b.ORGANIZNAME jgmc,
+			IFNULL((IFNULL(sum(a.tdfgrs),0) - sum(a.syfgrs))/sum(a.syfgrs),0) as growthRate			
+		FROM
+			fm_personnelsituation a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode
+		<if test="jgid!=null and jgid!='' ">
+			and b.jgid=#{jgid}
+		</if>
+   	    group by  b.jgid
+	</select>
+</mapper>

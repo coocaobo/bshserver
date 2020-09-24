@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bsoft.mapper.lzfy.InHosDeptMapper">
+	<select id="groupRyrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb002472) sval, dim0001653 ksdm from indb002472 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupCyrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb002471) sval, dim0001653 ksdm from indb002471 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupZyrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb002475) sval, dim0001653 ksdm from indb002475 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupZrrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb100001) sval, dim0001653 ksdm from indb100001 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupZcrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb100002) sval, dim0001653 ksdm from indb100002 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupCwsyByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb100003) sval, dim0001653 ksdm from indb100003 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupCwedByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb100004) sval, dim0001653 ksdm from indb100004 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupZyfjByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, a.fjxm fjxm, b.bqpx bqpx from  (
+			select sum(indb001754) sval, dim0001653 ksdm , dim0000828 fjxm from indb001754 where dim0000001 = #{date}
+			and dim0001715 = '2'
+			group by dim0001653, DIM0000828
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+
+	<select id="groupSSJrapByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb001915) sval, dim0001653 ksdm from indb001915 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupSSSqByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb001914) sval, dim0001653 ksdm from indb001914 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupSSWcByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb001919) sval, dim0001653 ksdm from indb001919 where dim0000001 = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupSSMrapByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.bqpx bqpx from  (
+			select sum(indb001915) sval, dim0001653 ksdm from indb001915
+			where to_char(to_date(dim0000001,'yyyy-mm-dd') - 1, 'yyyy-mm-dd') = #{date}
+			group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+
+	<select id="groupHlrsByDept" resultType="hashmap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, hljb hljb, b.bqpx bqpx from  (
+			select sum(indb001781) sval, dim0001653 ksdm, dim0000064 hljb from indb001781
+			where dim0000001 = #{date}
+			group by dim0001653, dim0000064
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+</mapper>

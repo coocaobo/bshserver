@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.HospitalInformationMapper">
+	<select id="findAll" resultType="HospitalInformation"  parameterType="User" >
+		select organizcode,
+	       registernumber,
+	       organizsecondname,
+	       organizname,
+	       classifycode,
+	       organiztype,
+	       admindivision,
+	       address,
+	       streecode,
+	       streename,
+	       hostcode,
+	       parentid,
+	       subcode,
+	       zipcode,
+	       telphone,
+	       email,
+	       founddate,
+	       legal,
+	       subnum,
+	       stationnum,
+	       pycode,
+	       grade,
+	       institlevel,
+	       buildingarea,
+	       chemicalmednum,
+	       chinesemednum,
+	       director,
+	       website,
+	       logoff,
+	       jgid,
+	       url,
+	       phisurl
+	 	from sys_organization
+	 	<where>
+			<if test="jgid!=null and jgid!='' and jgid !=0 ">
+				organizcode=#{jgid}
+			</if> 
+	 		<if test="jgmc!=null and jgmc!=''">
+	 			and organizname like concat('%',concat(#{jgmc},'%'))
+	 		</if>
+	 	</where>
+		
+	</select>
+	
+	<select id="findAllMS" resultType="HospitalInformation"  parameterType="User" >
+		select organizcode,
+	       registernumber,
+	       organizsecondname,
+	       organizname,
+	       classifycode,
+	       organiztype,
+	       admindivision,
+	       address,
+	       streecode,
+	       streename,
+	       hostcode,
+	       parentid,
+	       subcode,
+	       zipcode,
+	       telphone,
+	       email,
+	       founddate,
+	       legal,
+	       subnum,
+	       stationnum,
+	       pycode,
+	       grade,
+	       institlevel,
+	       buildingarea,
+	       chemicalmednum,
+	       chinesemednum,
+	       director,
+	       website,
+	       logoff
+	 	from sys_organization
+		WHERE
+			1 = 1 
+		<if test="jgid!=null and jgid!='' and jgid !=0 ">
+			and organizcode=#{jgid}
+		</if> 
+	</select>
+	
+	<!-- 新增医院信息 -->
+	<insert id="saveHospitalInfo" parameterType="HospitalInformation">
+		insert into sys_organization
+		  (organizcode, registernumber, organizsecondname, organizname, classifycode, organiztype, 
+		  admindivision, address, streecode, streename, hostcode, parentid, subcode, zipcode, telphone, 
+		  email, founddate, legal, subnum, stationnum, pycode, grade, institlevel, buildingarea, 
+		  chemicalmednum, chinesemednum, director, website, logoff)
+		values
+		  (#{organizCode}, #{registerNumber}, #{organizSecondName}, #{organizName}, #{classifyCode}, 
+		  #{organizType}, #{adminDivision}, #{address}, #{streeCode}, #{streeName}, #{hostCode}, #{parentId},  
+		  #{subCode}, #{zipCode},#{telphone}, #{email}, #{foundDate},  #{legal}, #{subNum}, #{stationNum}, #{pyCode},
+		  #{grade}, #{institLevel}, #{buildingArea}, #{chemicalMedNum}, #{chineseMedNum}, #{director}, #{website},
+    	  #{logoff})
+	</insert>
+	<select id="validataOrg"  resultType="int" parameterType="String">  
+    	select count(*) as count
+    	 from sys_organization where organizcode=#{organizcode}
+    </select> 
+    
+     <!-- 动态更新机构信息 -->
+    <update id="updateHospitalInfo"  parameterType="HospitalInformation">
+	 update sys_organization
+	 <set>
+	 	<if test="registerNumber!=null and registerNumber!=''">
+	 		registernumber = #{registerNumber},
+	 	</if>
+	 	<if test="organizName!=null and organizName!=''">
+	 		organizname = #{organizName},
+	 	</if>
+	 	<if test="organizSecondName!=null and organizSecondName!=''">
+	 		organizsecondname = #{organizSecondName},
+	 	</if>
+	 	<if test="classifyCode!=null and classifyCode!=''">
+	 		classifycode = #{classifyCode},
+	 	</if>
+	 	<if test="organizType!=null and organizType!=''">
+	 		organiztype = #{organizType},
+	 	</if>
+	 	<if test="adminDivision!=null and adminDivision!=''">
+	 		admindivision = #{adminDivision},
+	 	</if>
+	 	<if test="address!=null and address!=''">
+	 		address = #{address},
+	 	</if>
+	 	<if test="streeCode!=null and streeCode!=''">
+	 		streecode = #{streeCode},
+	 	</if>
+	 	<if test="streeName!=null and streeName!=''">
+	 		streename = #{streeName},
+	 	</if>
+	 	<if test="hostCode!=null and hostCode!=''">
+	 		hostcode = #{hostCode},
+	 	</if>
+	 	<if test="parentId!=null and parentId!=''">
+	 		parentid = #{parentId},
+	 	</if>
+	 	<if test="subCode!=null and subCode!=''">
+	 		subcode = #{subCode},
+	 	</if>
+	 	<if test="zipCode!=null and zipCode!=''">
+	 		zipcode = #{zipCode},
+	 	</if>
+	 	<if test="telphone!=null and telphone!=''">
+	 		telphone = #{telphone},
+	 	</if>
+	 	<if test="email!=null and email!=''">
+	 		email = #{email},
+	 	</if>
+	 	<if test="foundDate!=null and foundDate!=''">
+	 		founddate = #{foundDate},
+	 	</if>
+	 	<if test="legal!=null and legal!=''">
+	 		legal = #{legal},
+	 	</if>
+	 	<if test="subNum!=null and subNum!=''">
+	 		subnum = #{subNum},
+	 	</if>
+	 	<if test="stationNum!=null and stationNum!=''">
+	 		stationnum = #{stationNum},
+	 	</if>
+	 	<if test="pyCode!=null and pyCode!=''">
+	 		pycode = #{pyCode},
+	 	</if>
+	 	<if test="grade!=null and grade!=''">
+	 		grade = #{grade},
+	 	</if>
+	 	<if test="institLevel!=null and institLevel!=''">
+	 		institlevel = #{institLevel},
+	 	</if>
+	 	<if test="buildingArea!=null and buildingArea!=''">
+	 		buildingarea = #{buildingArea},
+	 	</if>
+	 	<if test="chemicalMedNum!=null and chemicalMedNum!=''">
+	 		chemicalmednum = #{chemicalMedNum},
+	 	</if>
+	 	<if test="chineseMedNum!=null and chineseMedNum!=''">
+	 		chinesemednum = #{chineseMedNum},
+	 	</if>
+	 	<if test="director!=null and director!=''">
+	 		director = #{director},
+	 	</if>
+	 	<if test="website!=null and website!=''">
+	 		 website = #{website},
+	 	</if>
+	 	<if test="logoff!=null and logoff!=''">
+	 		logoff = #{logoff},
+	 	</if>
+	 </set>
+	 where organizcode = #{organizCode}
+	</update>
+	
+	<!-- 动态查询医院列表 -->
+	<select id="getHospitalInfoByPage" parameterType="map" resultType="HospitalInformation">
+		select *from sys_organization
+		<where>
+			<if test="organizCode!=null and organizCode!=''">
+				organizcode=#{organizCode}
+			</if>
+			<if test="organizName!=null and organizName!=''">
+				organizname=#{organizName}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 获取全部机构类型 -->
+	<select id="getAllOrganizationType" resultType="java.util.Map">
+		select t.key "value",t.value "label" from WS_218 t
+	</select>
+	
+	<!-- 通过机构代码查询机构信息 -->
+	<select id="getHosInfoByOrganizationCode" resultType="HospitalInformation">
+		select *from sys_organization where organizcode=#{organizCode}
+	</select>
+	
+	<!-- 获取上级部门下的所以下级机构信息 -->
+	<select id="getHosInfoByParentId" resultType="HospitalInformation">
+		select *from sys_organization where parentid =#{parentId}
+	</select>
+	
+	<!-- 通过机构编码删除机构信息 -->
+	<delete id="deleteOrganization">
+		delete from sys_organization where organizcode=#{organizCode}
+	</delete>
+</mapper>

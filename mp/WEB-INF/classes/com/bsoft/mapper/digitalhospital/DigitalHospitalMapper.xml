@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.digitalhospital.DigitalHospitalMapper">
+	<select id="getDigitalHospitalIncome" resultType="DigitalHospitalIncome"  parameterType="hashmap" >
+		SELECT aa.jgid jgid,
+		       aa.HOSPITALNAME hospitalName,
+		       nvl(sum(aa.zfy),0) AS totalIncomeToday,
+		       nvl(sum(aa.ypf),0) AS drugIncome,
+		       nvl(sum(aa.ylf),0) AS medicalIncome,
+		       nvl(sum(aa.ghf),0) AS regFee
+		  FROM (SELECT a.jgid,
+		               c.HOSPITALNAME HOSPITALNAME,
+		               nvl(sum(a.FYJE), 0) AS zfy,
+		               nvl(CASE
+		                     WHEN b.FYFL = 2 THEN
+		                      sum(a.FYJE)
+		                   END,
+		                   0) AS ypf,
+		               nvl(CASE
+		                     WHEN b.FYFL = 1 THEN
+		                      sum(a.FYJE)
+		                   END,
+		                   0) AS ylf,
+		               nvl(CASE
+		                     WHEN a.fybm = 10 and a.fybm = 35 THEN
+		                      sum(a.FYJE)
+		                   END,
+		                   0) AS ghf
+		          FROM v_fysr_list a
+		          LEFT JOIN v_fyfl_list b
+		            ON a.FYBM = b.sfxm
+		          left join v_jgxx_list c
+		            on a.jgid = c.jgid
+		         WHERE 1 = 1
+		<if test="jgid!=null and jgid!='' and jgid !=0 ">
+			and a.jgid=#{jgid,jdbcType=VARCHAR}
+		</if>
+		<if test="date!=null and date!='' "> 
+			and to_char(a.SFRQ, 'yyyy-mm-dd')=  #{date}
+		</if> 
+		  GROUP BY a.jgid, b.FYFL,c.HOSPITALNAME,a.fybm) aa GROUP BY aa.jgid ,aa.HOSPITALNAME
+	</select>
+	
+	<select id="getDigitalHospitalOutDoc" resultType="DigitalHospitalOutDoc"  parameterType="hashmap" >
+		select b.jgid jgid,
+                       c.hospitalName hospitalName,
+                       a.ysdm docJobNum,
+                       d.ygxm docName,
+                       a.ksdm docDeptId,
+                       b.ksmc docDept,
+                       a.zblb amOrPmCode,
+                       case
+                         when a.zblb = 1 then
+                          '上午'
+                         else
+                          '下午'
+                       end amOrPm
+                 FROM V_YSPB_LIST a
+				   LEFT JOIN v_jgxx_list c
+				    ON a.jgid = c.jgid
+				  LEFT JOIN V_QYKS_LIST b
+				    ON a.ksdm = b.ksdm
+				  LEFT JOIN v_qyzg_list d
+				    ON a.ysdm = d.ygdm
+	     where  1 = 1  
+		<if test="jgid!=null and jgid!='' and jgid !=0 ">
+			and a.jgid=#{jgid,jdbcType=VARCHAR}
+		</if>
+		<if test="date!=null and date!='' "> 
+			and to_char(a.gzrq, 'yyyy-mm-dd')=  #{date}    
+		</if> 
+	</select>
+	<select id="getDigitalHospitalOutpatientInfo" resultType="DigitalHospitalOutpatientInfo"  parameterType="hashmap" >
+		select jgid,
+	       hospitalName,
+	       nvl(sum(outpatientRegNum),0) outpatientRegNum,
+	       nvl(sum(emergencyRegNum),0) emergencyRegNum,
+	       nvl(sum(visitingPerson),0) visitingPerson,
+	       nvl(sum(doorEmergencyRegTotalNum),0) doorEmergencyRegTotalNum,
+	       nvl(sum(quantityPrescription),0) quantityPrescription,
+	       nvl(sum(totalAmountPrescription),0) totalAmountPrescription,
+	       nvl(ROUND(max(maxPrescription), 2),0) maxPrescription,
+	       nvl(ROUND(max(minPrescription), 2),0) minPrescription,
+	       nvl(sum(totalNumberDoctors),0) totalNumberDoctors,
+	       nvl(ROUND(sum(doctorAvgOutpatient), 2),0) doctorAvgOutpatient,
+	       nvl(ROUND(sum(avgNumDocPrescriptions), 2),0) avgNumDocPrescriptions,
+	       nvl(ROUND(sum(avgPrescriptionAmount), 2),0) avgPrescriptionAmount
+	  from (select jgid,
+	               hospitalName,
+	               0 outpatientRegNum,
+	               0 emergencyRegNum,
+	               0 visitingPerson,
+	               0 doorEmergencyRegTotalNum,
+	               nvl(sum(quantityPrescription), 0) quantityPrescription,
+	               nvl(sum(totalAmountPrescription), 0) totalAmountPrescription,
+	               max(maxPrescription) maxPrescription,
+	               min(minPrescription) minPrescription,
+	               0 totalNumberDoctors,
+	               0 doctorAvgOutpatient,
+	               case when count(avgNumDocPrescriptions) = 0 then
+	               0 else 
+	               nvl(sum(quantityPrescription), 0) /
+	               count(avgNumDocPrescriptions) end avgNumDocPrescriptions,
+	               case when sum(avgPrescriptionAmount)=0 then 0
+	               else  nvl(sum(totalAmountPrescription), 0) /
+	               sum(avgPrescriptionAmount) end  avgPrescriptionAmount
+	          from (select a.jgid jgid,
+	                       b.hospitalName as hospitalName,
+	                       0 outpatientRegNum,
+	                       0 emergencyRegNum,
+	                       0 visitingPerson,
+	                       0 doorEmergencyRegTotalNum,
+	                       nvl(count(cfhm), 0) quantityPrescription,
+	                       nvl(sum(cfje), 0) totalAmountPrescription,
+	                       max(cfje) maxPrescription,
+	                       min(cfje) minPrescription,
+	                       0 totalNumberDoctors,
+	                       0 doctorAvgOutpatient,
+	                       a.ysdm avgNumDocPrescriptions,
+	                       nvl(count(cfhm), 0) avgPrescriptionAmount
+	                  from v_mzcf_list a
+	                  left join v_jgxx_list b
+	                    on a.jgid = b.jgid
+	                 where 1 = 1
+	                    <if test="jgid!=null and jgid!='' and jgid !=0 ">
+							and a.jgid=#{jgid,jdbcType=VARCHAR}
+						</if>
+						<if test="date!=null and date!='' "> 
+							and a.kfrq =  #{date}    
+						</if> 
+	                 group by a.jgid, b.hospitalName, a.ysdm) aa
+	         group by aa.jgid, aa.hospitalName
+	        union all
+	        select jgid,
+	               hospitalName,
+	               nvl(sum(outpatientRegNum), 0) outpatientRegNum,
+	               nvl(sum(emergencyRegNum), 0) emergencyRegNum,
+	               nvl(sum(visitingPerson), 0) visitingPerson,
+	               nvl(sum(doorEmergencyRegTotalNum), 0) doorEmergencyRegTotalNum,
+	               0 quantityPrescription,
+	               0 totalAmountPrescription,
+	               0 maxPrescription,
+	               0 minPrescription,
+	               count(distinct(totalNumberDoctors)) totalNumberDoctors,
+	               nvl(case when count(distinct(doctorAvgOutpatient)) = 0 then 0
+	               else sum(visitingPerson) / count(distinct(doctorAvgOutpatient)) end, 0) doctorAvgOutpatient,
+	               0 avgNumDocPrescriptions,
+	               0 avgPrescriptionAmount
+	          from (select a.jgid jgid,
+	                       b.hospitalName hospitalName,
+	                       nvl(case
+	                             when a.ghlb != 2 then
+	                              count(*)
+	                           end,
+	                           0) outpatientRegNum,
+	                       nvl(case
+	                             when a.ghlb = 2 then
+	                              count(*)
+	                           end,
+	                           0) emergencyRegNum,
+	                       nvl(case
+	                             when a.jzzt = 9 then
+	                              count(*)
+	                           end,
+	                           0) visitingPerson,
+	                       nvl(count(*), 0) doorEmergencyRegTotalNum,
+	                       0 quantityPrescription,
+	                       0 totalAmountPrescription,
+	                       0 maxPrescription,
+	                       0 minPrescription,
+	                       case
+	                         when a.jzzt = 9 then
+	                          a.ysdm
+	                       end totalNumberDoctors,
+	                       a.ysdm doctorAvgOutpatient,
+	                       0 avgNumDocPrescriptions,
+	                       0 avgPrescriptionAmount
+	                  from v_gh_list a
+	                  left join v_jgxx_list b
+	                    on a.jgid = b.jgid
+	                 where 1 = 1
+	                    <if test="jgid!=null and jgid!='' and jgid !=0 ">
+							and a.jgid=#{jgid,jdbcType=VARCHAR}
+						</if>
+						<if test="date!=null and date!='' "> 
+							and to_char(a.ghsj, 'yyyy-mm-dd')=  #{date}    
+						</if> 
+	                 group by a.jgid, b.hospitalName, a.ghlb, a.jzzt, a.ysdm) aa
+	         group by jgid, hospitalName)
+	 group by jgid, hospitalName
+	</select>
+	
+	<select id="getDigitalHospitalTodayOperation" resultType="DigitalHospitalTodayOperation"  parameterType="hashmap" >
+		select jgid,
+	        hospitalName,
+	        nvl(sum(arrangementQuantity), 0) arrangementQuantity,
+	        nvl(sum(applicationsNum), 0) applicationsNum,
+	        nvl(sum(finishToday), 0) finishToday,
+	        nvl(sum(tomorrowArrangement), 0) tomorrowArrangement
+	   from (select a.jgid jgid,
+	                b.hospitalName hospitalName,
+	                nvl(count(*), 0) arrangementQuantity,
+	                0 applicationsNum,
+	                nvl(case
+	                      when wcbz = 1 then
+	                       count(*)
+	                    end,
+	                    0) finishToday,
+	                nvl(case
+	                      when aprq = aprq + 1 then
+	                       count(*)
+	                    end,
+	                    0) tomorrowArrangement
+	           from v_ssap_list a
+	           left join v_jgxx_list b
+	             on a.jgid = b.jgid
+	          where 1=1 
+	            <if test="jgid!=null and jgid!='' and jgid !=0 ">
+					and a.jgid=#{jgid,jdbcType=VARCHAR}
+				</if>
+				<if test="date!=null and date!='' "> 
+					and to_char(a.aprq, 'yyyy-mm-dd')=  #{date}    
+				</if> 
+	          group by aprq, wcbz, a.jgid, b.hospitalName
+	         union all
+	         select a.jgid jgid,
+	                b.hospitalName hospitalName,
+	                0 arrangementQuantity,
+	                nvl(count(*), 0) applicationsNum,
+	                0 finishToday,
+	                0 as tomorrowArrangement
+	           from v_sssq_list a
+	           left join v_jgxx_list b
+	             on a.jgid = b.jgid
+	          where 1=1 
+	          	<if test="jgid!=null and jgid!='' and jgid !=0 ">
+					and a.jgid=#{jgid,jdbcType=VARCHAR}
+				</if>
+				<if test="date!=null and date!='' "> 
+					and to_char(a.sqrq, 'yyyy-mm-dd')=  #{date}    
+				</if> 
+	          group by a.jgid, b.hospitalName)
+	  group by jgid, hospitalName
+	</select>
+	
+	
+	<select id="getDigitalHospitalWardInfo" resultType="DigitalHospitalWardInfo"  parameterType="hashmap" >
+		select jgid,
+		       hospitalName,
+		       nvl(sum(beHos), 0) beHos,
+		       nvl(sum(leaveHos), 0) leaveHos,
+		       nvl(sum(inHos), 0) inHos,
+		       nvl(sum(critical), 0) critical,
+		       max(ratedBed) ratedBed,
+		        max(extraBedNum)- max(ratedBed) extraBedNum,
+		       round(case when max(extraBedNum)= 0 then 0 else( max(bedUseRate) / max(extraBedNum)) end, 2) bedUseRate,
+		       nvl(sum(deathToll), 0) deathToll,
+		       nvl(sum(specialCare), 0) specialCare,
+		       nvl(sum(classINursing), 0) classINursing,
+		       nvl(sum(classIINursing), 0) classIINursing,
+		       nvl(sum(gradeIIINursing), 0) gradeIIINursing
+		  from (select a.jgid jgid,
+		               b.hospitalName hospitalName,
+		               case when  1=1 
+		                 <if test="date!=null and date!='' "> 
+							and to_char(a.rysj, 'yyyy-mm-dd')=  #{date}    
+						 </if> 
+		                 then
+		                  count(1)
+		               end beHos,
+		               case
+		                 when  1=1 
+		                 <if test="date!=null and date!='' "> 
+							and to_char(a.cyrq, 'yyyy-mm-dd')=  #{date}    
+						 </if> 
+						 then
+		                  count(1)
+		               end leaveHos,
+		               case
+		                 when cypb = 0 then
+		                  count(1)
+		               end inHos,
+		               case
+		                 when cypb not in (0, 1) and brqk = 1 then
+		                  count(brch)
+		               end critical,
+		                (select count(brch) from v_cwxx_list c where c.jgid = a.jgid) ratedBed,
+		               (select count(1)
+		                  from v_cwxx_list c
+		                 where c.jgid = a.jgid
+		                    ) extraBedNum,
+		               (select count(1)
+		                  from v_cwxx_list c
+		                 where c.jgid = a.jgid
+		                   and zcqk = 1) bedUseRate,
+		               case
+		                 when 1=1 
+		                 <if test="date!=null and date!='' "> 
+							and to_char(a.cyrq, 'yyyy-mm-dd')=  #{date}    
+						 </if> 
+		                  and
+		                      cyfs = 4 then
+		                  count(1)
+		               end deathToll,
+		               case
+		                 when cypb = 0 and hljb = 0 then
+		                  count(1)
+		               end specialCare,
+		               case
+		                 when cypb = 0 and hljb = 1 then
+		                  count(1)
+		               end classINursing,
+		               case
+		                 when cypb = 0 and hljb = 2 then
+		                  count(1)
+		               end classIINursing,
+		               case
+		                 when cypb = 0 and hljb = 3 then
+		                  count(1)
+		               end gradeIIINursing
+		          from v_zyxx_list a
+		          left join v_jgxx_list b
+		            on a.jgid = b.jgid
+		         where 1=1
+		            <if test="jgid!=null and jgid!='' and jgid !=0 ">
+						and a.jgid=#{jgid,jdbcType=VARCHAR}
+					</if>
+		         group by a.jgid,
+		                  b.hospitalName,
+		                  a.rysj,
+		                  a.cyrq,
+		                  cypb,
+		                  brqk,
+		                  cyfs,
+		                  hljb)
+		 group by jgid, hospitalName
+	</select>
+	<select id="getDigitalHospitalWardInfoByKsdm" resultType="DigitalHospitalWardInfo"  parameterType="hashmap" >
+		select jgid,
+		           hospitalName,
+		           nvl(sum(beHos), 0) beHos,
+		           nvl(sum(leaveHos), 0) leaveHos,
+		           nvl(sum(inHos), 0) inHos, 
+		           max(ratedBed) ratedBed,
+		           max(ratedBed) isBed,
+		           max(extraBedNum) extraBedNum,
+		            case when max(bedUseRate)=0 
+                         then 0 else 
+                       round(max(bedUseRate) / max(ratedBed), 2) end bedUseRate, 
+		           docDeptId docDeptId, 
+		           docDept docDept
+		      from (
+		select a.jgid jgid,
+		       b.hospitalName hospitalName,
+		       case
+		         when 1 = 1 
+		           <if test = "date!=null and date!='' " > and
+		              to_char(a.rysj, 'yyyy-mm-dd') = #{date} 
+		           </if > 
+		              then
+		          count(*)
+		       end beHos,
+		       case
+		         when 1 = 1
+		           <if test = "date!=null and date!='' " > 
+		              and to_char(a.cyrq, 'yyyy-mm-dd') = #{date} 
+		           </if > then
+		          count(*)
+		       end leaveHos,
+		       case
+		         when cypb = 0 then
+		          count(*)
+		       end inHos,
+		       (select count(*) from v_cwxx_list c where c.jgid = a.jgid  and c.cwks = a.brks) ratedBed,
+		       (select count(*) from v_cwxx_list c where c.jgid = a.jgid  and c.cwks = a.brks) isBed,
+		       (select count(*)
+		          from v_cwxx_list c
+		         where c.jgid = a.jgid
+		           and jcpb = 1  and c.cwks = a.brks) extraBedNum,
+		       (select count(*)
+		          from v_cwxx_list c
+		         where c.jgid = a.jgid
+		           and zcqk = 1  and c.cwks = a.brks) bedUseRate,
+		       d.ksdm docDeptId,
+		       d.ksmc docDept
+		  from v_zyxx_list a
+		  left join v_jgxx_list b
+		    on a.jgid = b.jgid
+		  left join v_qyks_list d
+		    on a.brks = d.ksdm
+		 where 1 = 1 
+		 <if test = "jgid!=null and jgid!='' and jgid !=0 " >
+		   and a.jgid = #{jgid,jdbcType=VARCHAR} 
+		 </if >
+		 group by a.jgid, b.hospitalName, a.rysj, a.cyrq, cypb, d.ksdm, d.ksmc,a.brks)
+     group by jgid, hospitalName,docDeptId, docDept
+	</select>
+	
+	<select id="getComprehensiveDaily" resultType="ComprehensiveDaily"  parameterType="hashmap" >
+		SELECT aa.jgid jgid,
+           aa.HOSPITALNAME hospitalName,
+           nvl(sum(aa.zfy), 0) AS totalIncomeToday,
+           nvl(sum(aa.mzf), 0) AS outpatientIncome,
+           nvl(sum(aa.zyf), 0) AS hospitalizationIncome,
+           nvl(sum(aa.cyjs), 0) AS dischargeSettlement,
+           nvl(sum(aa.cywjs), 0) AS unsettledDischarge,
+           count(aa.beHos) AS beHos,
+           count(aa.leaveHos) AS leaveHos,
+           count(aa.unsettledDischargeNum) AS unsettledDischargeNum,
+           count(aa.inHos) AS inHos
+      FROM (SELECT a.jgid,
+                   c.HOSPITALNAME HOSPITALNAME,
+                   nvl(sum(a.FYJE), 0) AS zfy,
+                   nvl(CASE
+                         WHEN a.type = '住院' THEN
+                          sum(a.FYJE)
+                       END,
+                       0) AS zyf,
+                   nvl(CASE
+                         WHEN a.type != '住院' THEN
+                          sum(a.FYJE)
+                       END,
+                       0) AS mzf,
+                   nvl(CASE
+                         WHEN b.cypb = 8 THEN
+                          b.fyje
+                       END,
+                       0) AS cyjs,
+                   nvl(CASE
+                         WHEN b.cypb = 1 THEN
+                          b.fyje
+                       END,
+                       0) AS cywjs,
+                   CASE
+                         WHEN to_char(b.rysj, 'yyyy-mm-dd')= #{date} and a.zyh!=0   THEN
+                          a.zyh
+                       END  AS beHos,
+                   CASE
+                         WHEN to_char(b.cyrq, 'yyyy-mm-dd')= #{date} and a.zyh!=0 and b.cypb=8  THEN
+                          a.zyh
+                       END AS leaveHos,
+                   CASE
+                         WHEN b.cypb = 1 THEN
+                          a.zyh
+                       END AS unsettledDischargeNum, 
+                    CASE
+                         WHEN b.cypb = 0 THEN
+                          a.zyh
+                       END AS inHos
+              FROM v_fysr_list a
+		          LEFT JOIN v_zyxx_list b
+		            ON a.zyh = b.zyh
+		          left join v_jgxx_list c
+		            on a.jgid = c.jgid
+		         WHERE 1 = 1
+		<if test="jgid!=null and jgid!='' and jgid !=0 ">
+			and a.jgid=#{jgid,jdbcType=VARCHAR}
+		</if>
+		 <if test="date!=null and date!='' "> 
+			and a.SFRQ =  #{date}    
+		 </if> 
+		  GROUP BY a.jgid, c.HOSPITALNAME,a.type,b.cypb,a.zyh,b.rysj,b.fyje,b.cyrq) aa GROUP BY aa.jgid ,aa.HOSPITALNAME
+	</select>
+	
+	<select id="getComprehensiveMonthlyRepByDay" resultType="ComprehensiveMonthlyRepByDay"  parameterType="hashmap" >
+		   select jgid, HOSPITALNAME, nvl(sum(dailyIncome),0) dailyIncome, totalDays, day
+			  from (SELECT a.jgid,
+			               c.HOSPITALNAME HOSPITALNAME,
+			               nvl(sum(a.FYJE), 0) dailyIncome,
+                        trunc(to_char(last_day(to_date(a.sfrq,'yyyy-mm-dd')), 'dd')) totalDays,
+                        trunc(to_char(to_date(a.sfrq,'yyyy-mm-dd'), 'dd')) day
+			          FROM v_fysr_list a
+			          LEFT JOIN v_zyxx_list b
+			            ON a.zyh = b.zyh
+			          left join v_jgxx_list c
+			             ON a.jgid = c.jgid||''
+			         WHERE 1 = 1 
+			         <if test = "jgid!=null and jgid!='' and jgid !=0 " >
+			           and a.jgid = #{jgid,jdbcType=VARCHAR} 
+			         </if> 
+			         <if test = "date!=null and date!='' " >
+			           and substr(a.SFRQ, 0, 7) = substr(#{date}, 0, 7) 
+			         </if>
+			         GROUP BY a.jgid, c.HOSPITALNAME, a.SFRQ
+			        union all
+			        select (select jgid||'' from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR}) jgid,
+			               (select hospitalName from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR}) hospitalName,
+			               0 dailyIncome,
+			               trunc(to_char(last_day(to_date(#{date}, 'yyyy-mm-dd')), 'dd')) totalDays,
+			               level day
+			          from dual
+			        connect by level <![CDATA[<=]]>
+			                   trunc(to_char(last_day(to_date(#{date}, 'yyyy-mm-dd')),
+			                                 'dd')))
+			 group by jgid, HOSPITALNAME, totalDays, day
+
+	</select>
+	
+	<select id="getComprehensiveMonthlyRep" resultType="ComprehensiveMonthlyRep"  parameterType="hashmap" >
+		   SELECT aa.jgid jgid,
+		       aa.HOSPITALNAME hospitalName,
+		       round(nvl(sum(aa.monthlyIncome), 0) /
+		             trunc(to_char(last_day(to_date(#{date}, 'yyyy-fmmm-dd')),
+		                           'dd')),
+		             2) AS dailyIncomeAvg,
+		       nvl(sum(aa.monthlyIncome), 0) AS monthlyIncome,
+		       round(count(aa.beHos) /
+		             trunc(to_char(last_day(to_date(#{date}, 'yyyy-fmmm-dd')),
+		                           'dd')),
+		             2) dailyAdmissionHos,
+		       round(count(aa.leaveHos) /
+		             trunc(to_char(last_day(to_date(#{date}, 'yyyy-fmmm-dd')),
+		                           'dd')),
+		             2) dailyDischargeHos,
+		       count(aa.beHos) monthlyAdmission,
+		       count(aa.leaveHos) as monthlyDischargeHos,
+		       count(aa.beHos) AS monthAdmission,
+		       count(aa.preMonthAdmission) AS preMonthAdmission,
+		       round(max(monthlyOutpatientVisits) /
+		             trunc(to_char(last_day(to_date(#{date}, 'yyyy-fmmm-dd')),
+		                           'dd')),
+		             2) AS dailyAvegOutpatientNum,
+		       nvl(max(monthlyOutpatientVisits), 0) AS monthlyOutpatientVisits,
+		       round(max(premonthlyOutpatientVisits) /
+		             trunc(to_char(last_day(add_months(trunc(to_date(#{date},
+		                                                             'yyyy-fmmm-dd'),
+		                                                     'mm'),
+		                                               -1)),
+		                           'dd')),
+		             2) AS preDailyAvegOutpatientNum,
+		       nvl(max(premonthlyOutpatientVisits), 0) AS premonthlyOutpatientVisits
+		  FROM (SELECT a.jgid,
+		               c.HOSPITALNAME HOSPITALNAME,
+		               nvl(sum(a.FYJE), 0) monthlyIncome,
+		               CASE
+		                 WHEN to_char(b.rysj, 'yyyy-mm') = substr(#{date}, 0, 7) and
+		                      a.zyh != 0 THEN
+		                  a.zyh
+		               END AS beHos,
+		               CASE
+		                 WHEN to_char(b.cyrq, 'yyyy-mm') = substr(#{date}, 0, 7) and
+		                      a.zyh != 0 and b.cypb = 8 THEN
+		                  a.zyh
+		               END AS leaveHos,
+		               CASE
+		                 WHEN to_char(b.rysj, 'yyyy-mm') = substr(#{date}, 0, 7) and
+		                      a.zyh != 0 THEN
+		                  a.zyh
+		               END AS monthAdmission,
+		               CASE
+		                 WHEN to_char(add_months(trunc(b.rysj, 'mm'), +1), 'yyyy-mm') =
+		                      substr(#{date}, 0, 7) and a.zyh != 0 THEN
+		                  a.zyh
+		               END AS preMonthAdmission,
+		               (select count(*)
+		                  from v_gh_list gh
+		                 where gh.jgid = a.jgid
+		                   and to_char(gh.ghsj, 'yyyy-mm') =
+		                       substr(#{date}, 0, 7)) monthlyOutpatientVisits,
+		               (select count(*)
+		                  from v_gh_list gh
+		                 where gh.jgid = a.jgid
+		                   and to_char(add_months(trunc(gh.ghsj, 'mm'), +1),
+		                               'yyyy-mm') = substr(#{date}, 0, 7)) premonthlyOutpatientVisits 
+		          FROM v_fysr_list a
+		          LEFT JOIN v_zyxx_list b
+		            ON a.zyh = b.zyh
+		          left join v_jgxx_list c
+		            on a.jgid = c.jgid
+		         WHERE 1 = 1
+		        <if test="jgid!=null and jgid!='' and jgid !=0 ">
+		           and a.jgid = #{jgid,jdbcType=VARCHAR}
+		        </if>
+		        <if test="date!=null and date!='' "> 
+		           and  substr(a.SFRQ, 0, 7) = substr(#{date}, 0, 7)
+		        </if> 
+		         GROUP BY a.jgid, c.HOSPITALNAME, b.cypb, a.zyh, b.rysj, b.cyrq) aa
+		 GROUP BY aa.jgid, aa.HOSPITALNAME
+
+	</select>
+	
+	<select id="getSurgicalArrangementList" resultType="SurgicalArrangement"  parameterType="hashmap" >
+		
+  			select a.jgid jgid,
+                  b.hospitalName hospitalName,
+                  a.ssdh operationNum,
+                  c.brxm patientName,
+                  c.zyhm inpatientNum,
+                  case when c.brxb= 1 then '男'
+                   when c.brxb = 2 then '女'
+                   else '未知' end  gender,
+                   c.rynl age,
+                  d.ksdm departId,
+                  d.ksmc department,
+                  c.brch bedNo,
+                  TO_CHAR(a.ssrq,'hh24:mi') operationTime,
+                  a.ssmc operativeName,
+                  e.ygxm doctor,
+                  a.mzmc anestheticMethod,
+                  f.ygxm anesthesiologist
+             from v_ssap_list a
+             left join v_jgxx_list b
+               on a.jgid = b.jgid
+               left join v_zyxx_list c 
+               on a.zyh = c.zyh  and a.jgid = c.jgid
+               left join v_qyks_list d 
+               on a.ssks = d.ksdm
+               and a.jgid = d.jgid
+               left join v_qyzg_list e on a.ssys = e.ygdm
+                left join v_qyzg_list f on a.ssys = f.ygdm
+            where 1=1 
+        <if test="jgid!=null and jgid!='' and jgid !=0 ">
+          and a.jgid= #{jgid,jdbcType=VARCHAR}
+        </if>
+        <if test="date!=null and date!='' "> 
+          and to_char(a.ssrq, 'yyyy-mm-dd')= #{date}
+       </if> 
+	</select>
+	<select id="getSurgicalArrangementInfo" resultType="SurgicalArrangement"  parameterType="hashmap" >
+		select a.jgid jgid,
+                  b.hospitalName hospitalName,
+                  a.ssdh operationNum,
+                  c.brxm patientName,
+                  c.zyhm inpatientNum,
+                  case when c.brxb= 1 then '男'
+                   when c.brxb = 2 then '女'
+                   else '未知' end  gender,
+                   c.rynl age,
+                  d.ksdm departId,
+                  d.ksmc department,
+                  c.brch bedNo,
+                  TO_CHAR(a.ssrq,'hh24:mi') operationTime,
+                  a.ssmc operativeName,
+                  e.ygxm doctor,
+                  a.mzmc anestheticMethod,
+                  f.ygxm anesthesiologist
+             from v_ssap_list a
+             left join v_jgxx_list b
+               on a.jgid = b.jgid
+               left join v_zyxx_list c 
+               on a.zyh = c.zyh  and a.jgid = c.jgid
+               left join v_qyks_list d 
+               on a.ssks = d.ksdm
+               and a.jgid = d.jgid
+               left join v_qyzg_list e on a.ssys = e.ygdm
+                left join v_qyzg_list f on a.ssys = f.ygdm
+            where 1=1 
+        <if test="jgid!=null and jgid!='' and jgid !=0 ">
+          and a.jgid= #{jgid,jdbcType=VARCHAR}
+        </if>
+        <if test="ssdh!=null and ssdh!='' "> 
+          and a.ssdh = #{ssdh}
+       </if> 
+	</select>
+	
+	<select id="getTodayEmergencyVolumeTotal" resultType="PortalEmergencyVolume"  parameterType="hashmap" >
+		select jgid,
+		       hospitalName,
+		       nvl(sum(outpatientRegNum), 0) outpatientNum,
+		       nvl(sum(emergencyRegNum), 0) emergencyNum,
+		       nvl(sum(doorEmergencyRegTotalNum), 0) doorEmergencyRegTotalNum,
+		       regDate regDate
+		  	   from (
+		        select a.jgid jgid,
+		                b.hospitalName hospitalName,
+		                nvl(case
+		                      when a.ghlb != 2 then
+		                       count(*)
+		                    end,
+		                    0) outpatientRegNum,
+		                nvl(case
+		                      when a.ghlb = 2 then
+		                       count(*)
+		                    end,
+		                    0) emergencyRegNum,
+		                count(*) doorEmergencyRegTotalNum,
+		                to_char(a.ghsj, 'yyyy-mm-dd') regDate
+		          from v_gh_list a
+		          left join v_jgxx_list b
+		            on a.jgid = b.jgid
+		         where 1 = 1 
+		        <if test="jgid!=null and jgid!='' and jgid !=0 ">
+						and a.jgid=#{jgid,jdbcType=VARCHAR}
+				</if>
+		        <if test = "date!=null and date!='' ">
+		           and to_char(a.ghsj, 'yyyy-mm-dd') = #{date} 
+		        </if> 
+		         group by a.jgid, b.hospitalName, a.ghlb, a.ghsj) aa
+		 group by jgid, hospitalName, regDate
+	</select>
+	
+	<select id="getRegisteredNumbyTime" resultType="PortalEmergencyVolume"  parameterType="hashmap" >
+		select jgid,
+		       hospitalName,
+		       nvl(sum(outpatientRegNum), 0) outpatientNum,
+		       nvl(sum(emergencyRegNum), 0) emergencyNum,
+		       regTime || ':00' regTime
+		  from (select a.jgid jgid,
+		               b.hospitalName hospitalName,
+		               nvl(case
+		                     when a.ghlb != 2 then
+		                      count(*)
+		                   end,
+		                   0) outpatientRegNum,
+		               nvl(case
+		                     when a.ghlb = 2 then
+		                      count(*)
+		                   end,
+		                   0) emergencyRegNum,
+		               trunc(to_number(to_char(a.ghsj, 'hh24'))) regTime
+		          from v_gh_list a
+		          left join v_jgxx_list b
+		            on a.jgid = b.jgid
+		         where 1 = 1
+		               <if test="jgid!=null and jgid!='' and jgid !=0 ">
+		           			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+		               </if>
+		              <if test = "date!=null and date!='' ">
+			                and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+			          </if> 
+		         group by a.jgid,
+		                  b.hospitalName,
+		                  a.ghlb,
+		                  trunc(to_number(to_char(a.ghsj, 'hh24')))
+		        union all
+		        select (select jgid||'' from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR}) jgid ,
+		               (select hospitalName from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR})   hospitalName,
+		               0 outpatientRegNum,
+		               0 emergencyRegNum,
+		               level - 1 regTime
+		          from dual   
+		        connect by level <![CDATA[<=]]> 24) aa
+		     group by jgid, hospitalName, regTime
+		 order by aa.regTime
+
+	</select>
+	<select id="getTrendAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select count(1) personTime, TO_CHAR(a.GHSJ, 'yyyy-mm') regDate
+		  from v_gh_list a
+		 where TO_CHAR(a.GHSJ, 'yyyy-mm') <![CDATA[<=]]> SUBSTR(#{date}, 0, 7)
+		   and TO_CHAR(a.GHSJ, 'yyyy-mm') <![CDATA[>]]>
+		       TO_CHAR(add_months(to_date(#{date}, 'YYYY-MM-dd'), -12),
+		                 'yyyy-mm')
+		 GROUP BY TO_CHAR(a.GHSJ, 'yyyy-mm')
+		 ORDER BY TO_CHAR(a.GHSJ, 'yyyy-mm') desc
+	</select>
+	<select id="getYearOnYearAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select regDate,
+		       round(case
+		               when prePersonTime = 0 then
+		                100
+		               else
+		                (personTime - prePersonTime) / prePersonTime * 100
+		             end,
+		             2) as yearOnYear
+		  from (select sum(personTime) personTime,
+		               to_char(regDate, 'yyyy-MM') regDate,
+		               sum(prePersonTime) prePersonTime
+		          from (SELECT count(1) personTime,a.GHSJ regDate,0 prePersonTime
+		                  FROM v_gh_list a
+		                 WHERE a.GHSJ <![CDATA[<=]]> to_date(#{date}, 'yyyy-MM-dd')
+		                   AND a.GHSJ <![CDATA[>]]> add_months(to_date(#{date}, 'YYYY-MM-dd'), -12)
+		                 GROUP BY a.GHSJ
+		                union all
+		                SELECT 0 personTime,
+		                       add_months(a.GHSJ,12) regDate,
+		                       count(1) prePersonTime
+		                  FROM v_gh_list a
+		                 WHERE a.GHSJ <![CDATA[<=]]> add_months(to_date(#{date}, 'YYYY-MM-dd'), -11)
+		                   AND a.GHSJ <![CDATA[>]]>add_months(to_date(#{date}, 'YYYY-MM-dd'), -23)
+		                 GROUP BY a.GHSJ)
+		         group by to_char(regDate, 'yyyy-MM'))
+		 order by regDate desc
+	</select>
+	<select id="getRingRatioAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select regDate,
+		       round(case
+		               when prePersonTime = 0 then
+		                100
+		               else
+		                (personTime - prePersonTime) / prePersonTime * 100
+		             end,
+		             2) as yearOnYear
+		  from (select sum(personTime) personTime,
+		               to_char(regDate, 'yyyy-mm'),
+		               sum(prePersonTime) prePersonTime
+		          from (SELECT count(1) personTime,
+		                       a.GHSJ regDate,
+		                       0 prePersonTime
+		                  FROM v_gh_list a
+		                 WHERE a.GHSJ <![CDATA[<=]]>
+		                       to_date(#{date}, 'YYYY-MM-dd')
+		                   AND a.GHSJ <![CDATA[>]]>
+		                       add_months(to_date(#{date}, 'YYYY-MM-dd'),
+		                                          -12)
+		                 GROUP BY a.GHSJ
+		                union all
+		                SELECT 0 personTime,
+		                       add_months(a.GHSJ,1) regDate,
+		                       count(1) prePersonTime
+		                  FROM v_gh_list a
+		                 WHERE a.GHSJ <![CDATA[<=]]>add_months(to_date(#{date}, 'YYYY-MM-dd'),-1)
+		                   AND a.GHSJ <![CDATA[>]]>add_months(to_date(#{date}, 'YYYY-MM-dd'),-12)
+		                 GROUP BY a.GHSJ)
+		         group by TO_CHAR(regDate, 'yyyy-mm'))
+		 order by regDate desc
+	</select>
+	<select id="getTimeIntervalAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select jgid,
+		       hospitalName,
+		       nvl(sum(outpatientRegNum), 0) outpatientNum,
+		       nvl(sum(emergencyRegNum), 0) emergencyNum,
+		       regTime || ':00' regTime
+		  from (select a.jgid jgid,
+		               b.hospitalName hospitalName,
+		               nvl(case
+		                     when a.ghlb != 2 then
+		                      count(*)
+		                   end,
+		                   0) outpatientRegNum,
+		               nvl(case
+		                     when a.ghlb = 2 then
+		                      count(*)
+		                   end,
+		                   0) emergencyRegNum,
+		               trunc(to_number(to_char(a.ghsj, 'hh24'))) regTime
+		          from v_gh_list a
+		          left join v_jgxx_list b
+		            on a.jgid = b.jgid
+		         where 1 = 1
+		               <if test="jgid!=null and jgid!='' and jgid !=0 ">
+		           			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+		               </if>
+		              <if test = "date!=null and date!='' ">
+			                and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+			          </if> 
+		         group by a.jgid,
+		                  b.hospitalName,
+		                  a.ghlb,
+		                  trunc(to_number(to_char(a.ghsj, 'hh24')))
+		        union all
+		        select (select jgid from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR}) jgid ,
+		               (select hospitalName from v_jgxx_list where jgid = #{jgid,jdbcType=VARCHAR})   hospitalName,
+		               0 outpatientRegNum,
+		               0 emergencyRegNum,
+		               level - 1 regTime
+		          from dual   
+		        connect by level <![CDATA[<=]]> 24) aa
+		     group by jgid, hospitalName, regTime
+		 order by aa.regTime
+
+	</select>
+	
+	<select id="getSexAndAgeAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select nl, nvl(sum(man), 0) man, nvl(sum(woman), 0) woman
+		  from (select case
+		                 when nl >= 100 then
+		                  '100岁以上'
+		                 when nl >= 95 then
+		                  '95-99岁'
+		                 when nl >= 90 then
+		                  '90-94岁'
+		                 when nl >= 85 then
+		                  '85-89岁'
+		                 when nl >= 80 then
+		                  '80-94岁'
+		                 when nl >= 75 then
+		                  '75-79岁'
+		                 when nl >= 70 then
+		                  '70-74岁'
+		                 when nl >= 65 then
+		                  '65-69岁'
+		                 when nl >= 60 then
+		                  '60-64岁'
+		                 when nl >= 55 then
+		                  '55-59岁'
+		                 when nl >= 50 then
+		                  '50-54岁'
+		                 when nl >= 45 then
+		                  '45-49岁'
+		                 when nl >= 40 then
+		                  '40-44岁'
+		                 when nl >= 35 then
+		                  '35-39岁'
+		                 when nl >= 30 then
+		                  '30-34岁'
+		                 when nl >= 25 then
+		                  '25-29岁'
+		                 when nl >= 20 then
+		                  '20-24岁'
+		                 when nl >= 15 then
+		                  '15-19岁'
+		                 when nl >= 10 then
+		                  '10-14岁'
+		                 when nl >= 5 then
+		                  '5-9岁'
+		                 else
+		                  '0-4岁'
+		               end as nl,
+		               case
+		                 when nl >= 100 then
+		                  1
+		                 when nl >= 95 then
+		                  2
+		                 when nl >= 90 then
+		                  3
+		                 when nl >= 85 then
+		                  4
+		                 when nl >= 80 then
+		                  5
+		                 when nl >= 75 then
+		                  6
+		                 when nl >= 70 then
+		                  7
+		                 when nl >= 65 then
+		                  8
+		                 when nl >= 60 then
+		                  9
+		                 when nl >= 55 then
+		                  10
+		                 when nl >= 50 then
+		                  11
+		                 when nl >= 45 then
+		                  12
+		                 when nl >= 40 then
+		                  13
+		                 when nl >= 35 then
+		                  14
+		                 when nl >= 30 then
+		                  15
+		                 when nl >= 25 then
+		                  16
+		                 when nl >= 20 then
+		                  17
+		                 when nl >= 15 then
+		                  18
+		                 when nl >= 10 then
+		                  19
+		                 when nl >= 5 then
+		                  20
+		                 else
+		                  21
+		               end as px,
+		               case
+		                 when brxb = 1 then
+		                  1
+		                 else
+		                  0
+		               end as man,
+		               case
+		                 when brxb = 2 then
+		                  1
+		                 else
+		                  0
+		               end as woman
+		          from v_gh_list
+		          where 1 = 1
+		               <if test="jgid!=null and jgid!='' and jgid !=0 ">
+		           			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+		               </if>
+		              <if test = "date!=null and date!='' ">
+			                and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+			          </if> 
+		          )
+		 group by nl, px
+		 order by px asc
+	</select>
+	<select id="getDepartmentAnalysis" resultType="hashmap"  parameterType="hashmap" >
+		select count(1) prePersonTime, b.ksmc deptName, b.ksdm deptId
+		  from v_gh_list a, v_qyks_list b
+		 where a.ksdm = b.ksdm
+		 <if test="jgid!=null and jgid!='' and jgid !=0 ">
+     			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+         </if>
+         <if test = "date!=null and date!='' ">
+               and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+         </if> 
+		 group by b.ksmc, b.ksdm
+	</select>
+	<select id="getDoctorList" resultType="hashmap"  parameterType="hashmap" >
+		select count(1) prePersonTime, b.ygxm docName, b.ygdm docId
+		  from v_gh_list a, v_qyzg_list b
+		 where a.ysdm = b.ygdm
+		 <if test="jgid!=null and jgid!='' and jgid !=0 ">
+     			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+         </if>
+         <if test = "date!=null and date!='' ">
+               and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+         </if> 
+		 group by b.ygxm, b.ygdm
+	</select>
+	<select id="getPatientList" resultType="hashmap"  parameterType="hashmap" >
+		select a.brid patientId,
+		       a.ghxh regNum,
+		       a.brxm patientName,
+		       a.brxb sex,
+		       a.nl age,
+		       a.ghmc regCategory,
+		       to_char(a.ghsj, 'yyyy-mm-dd') regTime
+		  from v_gh_list a, v_qyzg_list b
+		 where a.ysdm = b.ygdm
+
+		 <if test="jgid!=null and jgid!='' and jgid !=0 ">
+     			and a.jgid =  #{jgid,jdbcType=VARCHAR}
+         </if>
+         <if test = "date!=null and date!='' ">
+               and to_char(a.ghsj, 'yyyy-mm-dd') =   #{date}
+         </if>  
+	</select>
+	
+</mapper>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<indbs>
+<!-- 【查询统计，业务门诊信息指标】-->
+	<indbName indbName_key="yw_mzxx" indbName_value="indb002247">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimExpenseType>dim0000812</dimExpenseType>
+	</indbName>
+	<!-- 【查询统计，业务住院信息指标】 -->
+	<indbName indbName_key="yw_zyxx" indbName_value="indb002248">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<!-- 费用类型 -->
+		<dimExpenseType>dim0000812</dimExpenseType>
+	</indbName>
+	<!-- 【查询统计，财务门诊收入指标】-->
+	<indbName indbName_key="cw_mzxx" indbName_value="indb002247">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimMonth>dim0000003</dimMonth>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimExpenseType>dim0000812</dimExpenseType>
+	</indbName>
+	<!-- 【查询统计，财务住院收入指标】-->
+	<indbName indbName_key="cw_zyxx" indbName_value="indb002248">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimExpenseType>dim0000812</dimExpenseType>
+	</indbName>
+	<!-- 【查询统计，门诊人次】-->
+	<indbName indbName_key="mz_jzrc" indbName_value="indb002238">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDept>dim0001653</dimDept>
+		<dimDeptCW>dim0001651</dimDeptCW>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimRegisteredSource>dim0000649</dimRegisteredSource>
+	</indbName>
+	<!-- 【查询统计，住院人次】-->
+	<indbName indbName_key="zy_jzrc" indbName_value="indb002246">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDeptCW>dim0001651</dimDeptCW>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【查询统计，手术人次】-->
+	<indbName indbName_key="ss_jzrc" indbName_value="indb001720">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDept>dim0001653</dimDept>
+		<dimDeptCW>dim0000773</dimDeptCW>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【查询统计，手术费用】-->
+	<indbName indbName_key="yw_ssfy" indbName_value="indb001764">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【查询统计，财务手术收入】-->
+	<indbName indbName_key="cw_ssfy" indbName_value="indb001709">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000773</dimDept>
+		<dimMonth>dim0000003</dimMonth>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【挂号人次】-->
+	<indbName indbName_key="gh_rc" indbName_value="indb001844">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimHour>dim0001101</dimHour>
+	</indbName>
+	<!-- 【门诊挂号人次】-->
+	<indbName indbName_key="mzgh_rc" indbName_value="indb002467">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【急诊挂号人次】-->
+	<indbName indbName_key="jzgh_rc" indbName_value="indb002478">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【处方数量】-->
+	<indbName indbName_key="cf_sl" indbName_value="indb002469">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimPrescriptionType>dim0002052</dimPrescriptionType>
+	</indbName>
+	<!-- 【处方金额】-->
+	<indbName indbName_key="cf_je" indbName_value="indb002477">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimMonth>dim0000003</dimMonth>
+		<dimDoctor>dim0000282</dimDoctor>
+	</indbName>
+	<!-- 【住院费用-当日】-->
+	<indbName indbName_key="dr_zyfy" indbName_value="indb002473">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【门诊费用-当日】-->
+	<indbName indbName_key="dr_mzfy" indbName_value="indb002470">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【医生工作安排】-->
+	<indbName indbName_key="ys_gzap" indbName_value="indb001903">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimWorkTime>dim0001042</dimWorkTime>
+		<dimTotalNumber>dim0001045</dimTotalNumber><!-- 总号数 -->
+		<dimWorkStatus>dim0001047</dimWorkStatus>
+		<dimResidueNumber>dim0001049</dimResidueNumber><!-- 余号 -->
+		<dimSjc>dim0001198</dimSjc>
+	</indbName>
+	<!-- 【手术安排台次】-->
+	<indbName indbName_key="ss_aptc" indbName_value="indb001915">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【手术完成台次】-->
+	<indbName indbName_key="ss_wctc" indbName_value="indb001919">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【手术申请台次】-->
+	<indbName indbName_key="ss_sqtc" indbName_value="indb001914">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+
+	<!-- 【护理人次】-->
+	<indbName indbName_key="hl_rc" indbName_value="indb001781">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimHljB>dim0000064</dimHljB><!-- 护理级别 -->
+		<dimSjc>dim0001198</dimSjc>
+		<dimSfwz>dim0001107</dimSfwz><!-- 是否危重 -->
+	</indbName>
+	<!-- 【在院人次】-->
+	<indbName indbName_key="zy_rc" indbName_value="indb002475">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【入院人次】-->
+	<indbName indbName_key="ry_rc" indbName_value="indb002472">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【出院人次】-->
+	<indbName indbName_key="cy_rc" indbName_value="indb002471">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【住院危重人次】-->
+	<indbName indbName_key="zywz_rc" indbName_value="indb002480">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+
+	<!-- 辅检/【辅检人次】-->
+	<indbName indbName_key="fj_fjrc" indbName_value="indb001754">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimFjnx>DIM0000828</dimFjnx>
+		<dimMzOrZy>dim0001715</dimMzOrZy>
+	</indbName>
+	<!-- 门诊药品收入-->
+	<indbName indbName_key="mz_ypsr" indbName_value="indb001769">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimFjnx>DIM0000828</dimFjnx>
+		<!-- 收费类型 -->
+		<dimChargeType>dim0000865</dimChargeType>
+	</indbName>
+	<!-- 住院药品收入-->
+	<indbName indbName_key="zy_ypsr" indbName_value="indb001762">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimFjnx>DIM0000828</dimFjnx>
+		<!-- 收费类型 -->
+		<dimChargeType>dim0000865</dimChargeType>
+	</indbName>
+	<!-- 门诊材料收入-->
+	<indbName indbName_key="mz_clsr" indbName_value="indb002262">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 住院材料收入-->
+	<indbName indbName_key="zy_clsr" indbName_value="indb002274">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001651</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	
+	<!-- 【收治病人】 -->
+	<indbName indbName_key="sz_br" indbName_value="indb002256">
+		<dimTime>dim0000001</dimTime>
+		<dimMonth>dim0000003</dimMonth>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimSzbrType>dim0001952</dimSzbrType><!-- 0本科室/1其他科室收治 收治病人类型-->
+	</indbName>
+	
+	<!-- 【本科室收治】弃用-->
+	<indbName indbName_key="b_kssz" indbName_value="indb001721">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【其他科室收治】弃用-->
+	<indbName indbName_key="qt_kssz" indbName_value="indb001722">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【病人手术信息】-->
+	<indbName indbName_key="br_ssxx" indbName_value="indb001902">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+		<dimDept>dim0000584</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimSecondDept>dim0000088</dimSecondDept>
+		<dimPatientName>dim0001029</dimPatientName>
+		<dimAge>dim0001031</dimAge>
+		<dimSex>dim0001033</dimSex>
+		<dimOperationName>dim0001036</dimOperationName>
+		<dimOperationTime>dim0001038</dimOperationTime>
+		<dimFirstDoctor>dim0001351</dimFirstDoctor>
+		<dimSecondDoctor>dim0001353</dimSecondDoctor>
+		<dimFirstNurse>dim0001355</dimFirstNurse>
+		<dimSecondNurse>dim0001357</dimSecondNurse>
+	</indbName>
+	<!-- 【开放病床数】-->
+	<indbName indbName_key="kf_bcs" indbName_value="indb001729">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDept>dim0001653</dimDept>
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+	</indbName>
+	<!-- 【材料支出（用友）】-->
+	<indbName indbName_key="cl_zc" indbName_value="indb002289">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+	<!-- 【管理费用】-->
+	<indbName indbName_key="gl_fy" indbName_value="indb002290">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+	<!-- 【门诊收入】(财务用友数据) 门诊收入=挂号+诊察+检查+化验+治疗+手术+材料+药品-->
+	<indbName indbName_key="mz_sr" indbName_value="indb002247">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+	<!-- 【住院收入】(财务用友数据) (财务用友数据) 住院收入=床位+诊察+检查+化验+治疗+手术+护理+材料+药品-->
+	<indbName indbName_key="zy_sr" indbName_value="indb002248">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+	<!-- 【药品——血防】-->
+	<indbName indbName_key="yp_xf" indbName_value="indb002263">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+	<!-- 【住院药品——血防】-->
+	<indbName indbName_key="zyyp_xf" indbName_value="indb002273">
+		<dimTime>dim0000001</dimTime>
+		<dimOrganization>dim0000114</dimOrganization>
+<!-- 		<dimDept>dim0000584</dimDept> -->
+		<dimDoctor>dim0000282</dimDoctor>
+		<dimMonth>dim0000003</dimMonth>
+		<dimThirdDept>dim0001651</dimThirdDept>
+	</indbName>
+</indbs>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致findDetailMzsr
+
+ -->
+<mapper namespace="com.bsoft.mapper.lzfy.DeptMapper">
+    <select id="findDetailMzsr" resultType="java.util.HashMap" parameterType="java.lang.String">
+       select sval, ksdm,b.text ksmc, b.kslb kslb, b.mzpx mzpx  from (
+		select sum(indb002470) sval, dim0001653 ksdm from indb002470 where dim0000001 = #{date} group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+	</select>
+    <select id="findDetailZysr" resultType="java.util.HashMap" parameterType="java.lang.String">
+      select sval, ksdm,b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002473) sval, dim0001653 ksdm from indb002473 where dim0000001 = #{date} group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+    <select id="findDetailMzghrs" resultType="java.util.HashMap" parameterType="java.lang.String">
+      select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002467) sval, dim0001653 ksdm from indb002467 where dim0000001 = #{date} group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+
+    <select id="findDetailJzghrs" resultType="java.util.HashMap" parameterType="java.lang.String">
+      select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002478) sval, dim0001653 ksdm from indb002478 where dim0000001 = #{date} group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+
+
+    <select id="findDetailFjkstj" resultType="java.util.HashMap" parameterType="java.lang.String">
+      select sval, a.ksdm, b.text ksmc, a.fl, c.text fl_text, b.kslb kslb, b.mzpx mzpx  from (
+		select sum(indb001754) sval, dim0001653 ksdm, dim0000828 fl from indb001754 where dim0000001 = #{date}
+		and dim0001715 = '1'
+		group by dim0001653,dim0000828
+		) a left outer join dim0001653 b on a.ksdm = b.code
+		left outer join dim0000828 c on c.code = a.fl
+    </select>
+    <select id="findDetailCfkstjCFsl" resultType="java.util.HashMap" parameterType="java.lang.String">
+       select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002469) sval, dim0001653 ksdm from indb002469 where dim0000001 = #{date}
+		and (dim0000114 = '0' or dim0000114 = '1')
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+	<select id="findDetailCfkstjYbcfsl" resultType="java.util.HashMap" parameterType="java.lang.String">
+       select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002469) sval, dim0001653 ksdm from indb002469 where dim0000001 = #{date} and dim0000114 = '0'
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+
+    <select id="findDetailCfkstjCFje" resultType="java.util.HashMap" parameterType="java.lang.String">
+       select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002477) sval, dim0001653 ksdm from indb002477 where dim0000001 = #{date}
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+    </select>
+
+    <select id="findDetailYskstjCzzs2" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb001903) sval, dim0001653 ksdm from indb001903 where dim0000001 = #{date}
+		 and dim0001047 = '看诊'
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+
+    </select>
+	<select id="findDetailYskstjCzzs" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		  SELECT SUM(sval) sval, KSDM FROM (
+			SELECT
+			  indb001903 sval,
+			  dim0001653 ksdm
+			FROM indb001903
+			WHERE dim0000001 = #{date}
+				  AND dim0001047 = '看诊'
+			GROUP BY dim0001653, dim0000282, indb001903
+		  ) C GROUP BY ksdm
+				) a left outer join dim0001653 b on a.ksdm = b.code
+
+    </select>
+
+    <select id="findDetailYskstjMzrc" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002467) sval, dim0001653 ksdm from indb002467 where dim0000001 = #{date}
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+
+    </select>
+
+    <select id="findDetailYskstjCfzs" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002469) sval, dim0001653 ksdm from indb002469 where dim0000001 = #{date}
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+
+    </select>
+    <select id="findDetailYskstjCfje" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select sval, ksdm, b.text ksmc, b.kslb kslb, b.mzpx mzpx from (
+		select sum(indb002477) sval, dim0001653 ksdm from indb002477 where dim0000001 = #{date}
+		group by dim0001653
+		) a left outer join dim0001653 b on a.ksdm = b.code
+
+    </select>
+
+</mapper>

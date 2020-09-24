@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.OfficeInformationMapper">
+	<select id="findAll" resultType="OfficeInformation"  parameterType="User" >
+		select id,
+	       officecode,
+	       officename,
+	       address,
+	       organizcode,
+	       parentid,
+	       organiztype,
+	       telphone,
+	       email,
+	       plsx,
+	       pycode,
+	       accountoffice,
+	       outpatientclinic,
+	       medicallab,
+	       hospitaldept,
+	       hospitalarea,
+	       ratedbed,
+	       logoff,
+	       ybdz,
+	       ybdzmc,
+	       mtmanage,
+	       orgmappingid,
+	       platformcode
+	  from sys_office
+	</select>
+	
+	<insert id="save" parameterType="OfficeInformation">
+		insert into sys_office
+		  (id,
+		   officecode,
+		   officename,
+		   address,
+		   organizcode,
+		   parentid,
+		   organiztype,
+		   telphone,
+		   email,
+		   plsx,
+		   pycode,
+		   outpatientclinic,
+		   medicallab,
+		   hospitaldept,
+		   hospitalarea,
+		   ratedbed,
+		   logoff)
+		values
+		  (#{id},
+		   #{officeCode},
+		   #{officeName},
+		   #{address} ,
+		   #{organizCode},
+		   #{parentId},
+		   #{organizType},
+		   #{telphone},
+		   #{email},
+		   #{plsx},
+		   #{pyCode},
+		   #{outPatientClinic},
+		   #{medicalLab},
+		   #{hospitaldept},
+		   #{hospitalArea},
+		   #{ratedBed},
+		   #{logoff})
+	</insert>
+	<select id="validataOff"  resultType="int" parameterType="String">  
+    	select count(*) as count
+    	 from sys_office where organizcode=#{id}
+    </select> 
+    
+    <!-- 动态更新科室信息 -->
+    <update id="update"  parameterType="OfficeInformation">
+		 update sys_office
+		 <set>
+		 	<if test="officeCode!=null and officeCode!=''">
+		       officecode = #{officeCode},
+		 	</if>
+		 	<if test="officeName!=null and officeName!=''">
+		       officename = #{officeName},
+		 	</if>
+		 	<if test="address!=null and address!=''">
+		       address = #{address},
+		 	</if>
+		 	<if test="organizCode!=null and organizCode!=''">
+		       organizcode =  #{organizCode},
+		 	</if>
+		 	<if test="parentId!=null and parentId!=''">
+		       parentid = #{parentId},
+		 	</if>
+		 	<if test="organizType!=null and organizType!=''">
+		       organiztype = #{organizType},
+		 	</if>
+		 	<if test="telphone!=null and telphone!=''">
+		       telphone = #{telphone},
+		 	</if>
+		 	<if test="email!=null and email!=''">
+		       email = #{email},
+		 	</if>
+		 	<if test="plsx!=null and plsx!=''">
+		       plsx = #{plsx},
+		 	</if>
+		 	<if test="pyCode!=null and pyCode!=''">
+	       		pycode = #{pyCode},
+		 	</if>
+		 	<if test="outPatientClinic!=null and outPatientClinic!=''">
+		       outpatientclinic = #{outPatientClinic},
+		 	</if>
+		 	<if test="medicalLab!=null and medicalLab!=''">
+		       medicallab = #{medicalLab},
+		 	</if>
+		 	<if test="hospitaldept!=null and hospitaldept!=''">
+		       hospitaldept = #{hospitaldept},
+		 	</if>
+		 	<if test="hospitalArea!=null and hospitalArea!=''">
+		       hospitalarea = #{hospitalArea},
+		 	</if>
+		 	<if test="ratedBed!=null and ratedBed!=''">
+		       ratedbed = #{ratedBed},
+		 	</if>
+		 	<if test="logoff!=null and logoff!=''">
+		       logoff = #{logoff}
+		 	</if>
+		 </set>
+		 where id = #{id}
+	</update>
+	
+	<!-- 查询全部科室 -->
+	<select id="getAllDepartment" parameterType="java.util.Map" resultType="OfficeInformation">
+		select *from sys_office
+		<where>
+			<if test="organizCode!=null and organizCode!=''">
+				organizcode=#{organizCode}
+			</if>
+			<if test="officeName!=null and officeName!=''">
+				and officename like concat('%',concat(#{officeName},'%'))
+			</if>
+		</where>
+	</select>
+	
+	<!-- 通过科室编码查询科室信息 -->
+	<select id="getoffInfoByOfficeCode" resultType="OfficeInformation">
+		select *from sys_office where officecode = #{officeCode}
+	</select>
+	
+	<!-- 通过id删除科室信息 -->
+	<delete id="deleteOrganization">
+		delete from sys_office where id = #{id}
+	</delete>
+	
+	<!-- 通过机构编码获取科室信息 -->
+	<select id="getDepartmentByOrganizCode" resultType="OfficeInformation">
+		select *from sys_office where organizcode = #{organizCode}
+	</select>
+</mapper>

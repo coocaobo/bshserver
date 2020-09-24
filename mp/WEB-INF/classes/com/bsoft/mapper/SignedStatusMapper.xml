@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bsoft.mapper.SignedStatusMapper">
+	<select id="findAll" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate	
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			and a.jgid=#{jgid}
+		</if>
+	</select>
+	<select id="findAllByJgid" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			id id,
+			a.jgid jgid,
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			b.ORGANIZNAME jgmc,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate	
+
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			and a.jgid=#{jgid}
+		</if>
+		<!-- <if test="userName!=null and userName!='' ">
+			and user_name=#{userName}
+		</if> -->
+   	    group by  a.jgid
+	</select>
+	<select id="getSignedStatusCitySum" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate	
+			
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode
+		<if test="jgid!=null and jgid!='' ">
+			and  (a.jgid like CONCAT(#{jgid}, '%') )
+		</if>
+	</select>
+	<select id="getSignedStatusCountySum" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			c.ADMINDIVISION jgid,
+			c.ORGANIZNAME jgmc,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate,
+			(select ifnull(sum(xqzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ) zxqzrs,
+			(select ifnull(sum(qyzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  )zqyzrs,
+			(select ifnull(sum(qyzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  )/(select ifnull(sum(xqzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ) zqyl,
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ),0) - (select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ))/(select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ),0)     zgrowthRate	,
+(select ifnull(sum(fwjls),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  )  fwjlssum,
+(select ifnull(sum(zfws),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  )  zfwssum, 
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ),0) - (select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ))/(select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode 
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )  ),0)   fwRate	
+		
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode
+			<if test="jgid!=null and jgid!='' ">
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )
+			<!-- and a.jgid=#{jgid} -->
+		</if>
+		GROUP BY c.ADMINDIVISION,c.ORGANIZNAME
+	</select>
+	
+	<select id="getSignedStatusCountySumTotal" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate
+			
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID LEFT JOIN sys_organization c on b.PARENTID = c.ORGANIZCODE 
+		WHERE
+			a.jgid = g.teamcode
+			<if test="jgid!=null and jgid!='' ">
+			and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') )
+			<!-- and a.jgid=#{jgid} -->
+		</if>
+	</select>
+	
+	<select id="getSignedStatusSumByTeam" resultType="SignedStatus"  parameterType="User" >
+		
+SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			b.TEAMCODE jgid,
+			b.TEAMNAME jgmc,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			(IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys) as growthRate,
+			(select ifnull(sum(xqzrs),0)  FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} ) 
+			zxqzrs,
+			(select ifnull(sum(qyzrs),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} )
+			zqyzrs,
+			(select ifnull(sum(qyzrs),0)  FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			 
+				and b.ORGCODE = #{jgid}  )/
+(select ifnull(sum(xqzrs),0)  FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			 
+				and b.ORGCODE = #{jgid}  ) 
+zqyl,
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1  
+				and b.ORGCODE = #{jgid}),0) - 
+(select ifnull(sum(syqys),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid})/
+(select ifnull(sum(syqys),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} ) ),0)    
+
+ zgrowthRate,
+			(select ifnull(sum(fwjls),0)  FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} ) 
+			fwjlssum,
+			(select ifnull(sum(zfws),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} )
+			zfwssum,
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1  
+				and b.ORGCODE = #{jgid}),0) - 
+(select ifnull(sum(syqys),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid})/
+(select ifnull(sum(syqys),0) FROM fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE	1 = 1   and b.ORGCODE = #{jgid} ) ),0)    
+
+ fwRate		
+		
+		FROM
+			fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			<if test="jgid!=null and jgid!='' ">
+				<!-- and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') ) -->
+				and b.ORGCODE = #{jgid}
+				<!-- and a.jgid=#{jgid} -->
+			</if> 
+
+GROUP BY TEAMCODE ,
+			TEAMNAME 
+			
+	</select>
+	<select id="getSignedStatusSumByTeamTotal" resultType="SignedStatus"  parameterType="User" >
+		
+SELECT
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal(10,2)),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			(IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys) as growthRate
+		FROM
+			fm_signedstatus a
+		LEFT JOIN sys_team b ON a.jgid = b.TEAMCODE  
+		WHERE
+			1 = 1 
+			<if test="jgid!=null and jgid!='' ">
+				<!-- and (c.ADMINDIVISION like CONCAT(#{jgid}, '%') ) -->
+				and b.ORGCODE = #{jgid}
+				<!-- and a.jgid=#{jgid} -->
+			</if> 
+	</select>
+	
+	<select id="getSignedStatusCountyDetails" resultType="SignedStatus"  parameterType="User" >
+		SELECT 
+			b.jgid jgid,
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			ifnull(sum(qyyzz),0) qyyzz,
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			
+			b.ORGANIZNAME jgmc,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate
+,
+			(select ifnull(sum(xqzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ) zxqzrs,
+			(select ifnull(sum(qyzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ) zqyzrs,
+			(select ifnull(sum(qyzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid}  )/
+(select ifnull(sum(xqzrs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid}  ) zqyl,
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ),0) - (select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid}  )/(select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID	
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=510112003 )),0)     zgrowthRate,
+			(select ifnull(sum(fwjls),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ) fwjlssum,
+			(select ifnull(sum(zfws),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ) zfwssum,
+			 IFNULL((IFNULL((select ifnull(sum(qjzs),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid} ),0) - (select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=#{jgid}  )/(select ifnull(sum(syqys),0) from fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID	
+		WHERE
+			a.jgid = g.teamcode  
+			  and b.ADMINDIVISION=510112003 )),0)     fwRate		
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			  and b.ADMINDIVISION=#{jgid}  
+		</if>
+   	    group by  b.jgid,b.ORGANIZNAME
+	</select>
+	<select id="getSignedStatusCountyDetailsTotal" resultType="SignedStatus"  parameterType="User" >
+		SELECT 
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			
+			ifnull(sum(qyyzz),0) qyyzz,
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate		
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			  and b.ADMINDIVISION=#{jgid}  
+		</if>
+	</select>
+	<select id="getSignedStatusByJgid" resultType="SignedStatus"  parameterType="User" >
+		SELECT
+			id id,
+			b.jgid jgid,
+			ifnull(sum(xqzrs),0) xqzrs,
+			ifnull(sum(qyzrs),0) qyzrs,
+			ifnull(convert(sum(qyzrs)/sum(xqzrs),decimal),0) qyzb,
+			ifnull(sum(tdpjqys),0) tdpjqys,
+			ifnull(sum(qjzs),0) qjzs,
+			ifnull(sum(zdrqqys),0) zdrqqys,
+			ifnull(sum(ptrqqys),0) ptrqs,
+			ifnull(sum(etqys),0) ets,
+			ifnull(sum(ycfqys),0) ycfs,
+			ifnull(sum(lnrqys),0) lnrs,
+			ifnull(sum(mbrqys),0) mbrs,
+			ifnull(sum(fwjls),0) fwjls,
+			ifnull(sum(zfws),0) zfws,
+			ifnull(sum(ptrqfws),0) ptrqfws,
+			ifnull(sum(zdrqfws),0) zdrqfws,
+			
+			ifnull(sum(ycffws),0) ycffws,
+			ifnull(sum(etfws),0) etfws,
+			ifnull(sum(lnrfws),0) lnrfws,
+			ifnull(sum(mbfws),0) mbfws,
+			
+			ifnull(sum(qyyzz),0) qyyzz,
+			b.ORGANIZNAME jgmc,
+			
+			ifnull(sum(gxyqys),0) gxyqys,
+			ifnull(sum(tnbqys),0) tnbqys,
+			ifnull(sum(zzhzqys),0) zzhzqys,
+			ifnull(sum(cjrqys),0) cjrqys,
+			ifnull(sum(pkrqys),0) pkrqys,
+			ifnull(sum(jstsrqqys),0) jstsrqqys,
+			ifnull(sum(gxyfws),0) gxyfws,
+			ifnull(sum(tnbfws),0) tnbfws,
+			ifnull(sum(zzhzfws),0) zzhzfws,
+			ifnull(sum(cjrfws),0) cjrfws,
+			ifnull(sum(pkrfws),0) pkrfws,
+			ifnull(sum(tsrqfws),0) tsrqfws,
+			IFNULL((IFNULL(sum(qjzs),0) - sum(syqys))/sum(syqys),0) as growthRate	
+		FROM
+			fm_signedstatus a,sys_team g
+		LEFT JOIN sys_organization b ON g.orgcode = b.JGID
+		WHERE
+			a.jgid = g.teamcode 
+		<if test="jgid!=null and jgid!='' ">
+			and b.jgid=#{jgid}
+		</if>
+   	    group by  b.jgid
+	</select>
+</mapper>
